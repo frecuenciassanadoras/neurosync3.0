@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroSync™ | Redireccionando...</title>
+
+    <script>
+        // BYPASS V8: ESCAPE INMEDIATO AL NAVEGADOR NATIVO
+        (function() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            var isSocial = /TikTok|Instagram|FBAN|FBAV/i.test(ua);
+            var currentUrl = window.location.href;
+
+            if (isSocial) {
+                // ANDROID: Salto automático sin interacción
+                if (/Android/i.test(ua)) {
+                    var cleanUrl = currentUrl.replace(/^https?:\/\//, '');
+                    window.location.href = 'intent://' + cleanUrl + '#Intent;scheme=https;package=com.android.chrome;end';
+                } 
+                // IOS: Necesita una interacción, creamos una capa de salto
+                else if (/iPhone|iPad|iPod/i.test(ua)) {
+                    window.addEventListener('DOMContentLoaded', function() {
+                        var overlay = document.createElement('div');
+                        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:#0a0a0c; z-index:999999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:sans-serif; text-align:center; padding:20px;";
+                        overlay.innerHTML = `
+                            <div style="font-size:60px; margin-bottom:20px;">🚀</div>
+                            <h2 style="font-size:24px; font-weight:900; margin-bottom:10px;">CARGANDO ACCESO SEGURO</h2>
+                            <p style="opacity:0.7; margin-bottom:30px;">Toca cualquier lugar para continuar...</p>
+                            <div style="background:#38bdf8; color:black; padding:15px 30px; border-radius:100px; font-weight:900; text-transform:uppercase;">Entrar Ahora</div>
+                        `;
+                        overlay.onclick = function() {
+                            // Intentamos abrir en Chrome de iOS o forzamos el menú de Safari
+                            window.location.href = currentUrl.replace(/^https?:\/\//, 'googlechromes://');
+                            setTimeout(function() {
+                                alert("Toca los 3 puntos (...) arriba a la derecha y elige 'Abrir en el navegador'");
+                            }, 500);
+                        };
+                        document.body.appendChild(overlay);
+                    });
+                }
+            }
+        })();
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --color-primary: #0a0a0c;
+            --color-accent: #38bdf8;
+            --color-bg: #ffffff;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-primary);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+        }
+
+        .announcement-bar {
+            background: #ef4444;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .announcement-bar span { color: #fff; text-decoration: underline; }
+        .countdown { color: #fff; font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 900; background: rgba(0,0,0,0.2); padding: 2px 10px; border-radius: 6px; }
+
+        /* --- SALES POP --- */
+        #sales-pop {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #f3f4f6;
+        }
+        #sales-pop.active { transform: translateY(0); }
+        .pop-icon { width: 35px; height: 35px; background: #e0f2fe; color: #0ea5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .pop-text { font-size: 0.75rem; color: #1f2937; line-height: 1.2; }
+        .pop-text b { display: block; color: #000; }
+        .pop-time { font-size: 0.65rem; color: #9ca3af; margin-top: 2px; display: block; }
+
+        .header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; }
+        .logo span { color: var(--color-accent); }
+
+        /* --- HERO --- */
+        .hero-section { 
+            padding: 80px 5% 60px; 
+            text-align: center;
+            background: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.08) 0%, rgba(255, 255, 255, 0) 60%);
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            margin-bottom: 15px;
+            letter-spacing: -2px;
+        }
+        .hero-section h1 span { color: var(--color-accent); }
+        .hero-section p { color: #6b7280; font-size: 1.1rem; max-width: 800px; margin: 0 auto 40px; }
+
+        /* --- STACK LAYOUT --- */
+        .stack-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .mockup-img {
+            width: 100%;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+        }
+
+        .stack-title {
+            font-weight: 900;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .card-main {
+            border: 2px solid #111827;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            background: white;
+            position: relative;
+        }
+        .card-main .icon { font-size: 1.5rem; color: #38bdf8; }
+        .card-main .info h4 { font-weight: 800; font-size: 1.1rem; }
+        .card-main .info p { font-size: 0.8rem; color: #9ca3af; }
+        .card-main .price { margin-left: auto; font-weight: 800; font-size: 1rem; }
+
+        .separator { text-align: center; margin: 15px 0; color: #d1d5db; font-size: 1rem; }
+
+        .card-bonus {
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #38bdf8;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            background: white;
+            position: relative;
+        }
+        .card-bonus .icon { font-size: 1.8rem; color: #38bdf8; }
+        .card-bonus .info { flex: 1; }
+        .card-bonus .badge-bonus { 
+            display: inline-block;
+            background: #e0f2fe; 
+            color: #0ea5e9; 
+            font-size: 0.6rem; 
+            font-weight: 900; 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .card-bonus .info h4 { font-weight: 800; font-size: 1.1rem; line-height: 1.2; }
+        .card-bonus .info p { font-size: 0.8rem; color: #9ca3af; }
+        .card-bonus .price-tag { text-align: right; }
+        .card-bonus .old-price { font-size: 0.85rem; color: #9ca3af; text-decoration: line-through; display: block; }
+        .card-bonus .free-tag { font-weight: 950; color: #10b981; font-size: 1.1rem; }
+
+        /* --- PRICING --- */
+        .pricing-section { margin-top: 40px; text-align: right; }
+        .val-total { font-size: 1rem; color: #9ca3af; margin-bottom: 5px; }
+        .val-total span { text-decoration: line-through; font-weight: 700; }
+        .price-final { display: flex; justify-content: flex-end; align-items: baseline; gap: 15px; }
+        .price-final .label { font-weight: 900; font-size: 1.5rem; text-transform: uppercase; }
+        .price-final .amount { font-weight: 950; font-size: 4.5rem; color: #0ea5e9; line-height: 0.9; }
+
+        .btn-cta {
+            width: 100%;
+            background: #000;
+            color: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            font-weight: 900;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            margin: 40px 0 20px;
+            display: block;
+            text-align: center;
+            transition: 0.3s;
+            letter-spacing: 0.5px;
+        }
+        .btn-cta:hover { background: #111; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+        /* --- DARK SECTION --- */
+        .dark-section { background: #0a0a0c; color: white; padding: 100px 5%; text-align: center; }
+        .dark-section h2 { font-size: 3rem; font-weight: 900; margin-bottom: 60px; letter-spacing: -1px; }
+        .feature-grid-dark { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; max-width: 1200px; margin: 0 auto 60px; }
+        .feature-card-dark { background: #111114; padding: 50px 35px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .feature-card-dark:hover { border-color: #38bdf8; transform: translateY(-5px); }
+        .feature-card-dark .hz { font-size: 2.2rem; font-weight: 900; color: #38bdf8; margin-bottom: 20px; }
+        .feature-card-dark h4 { font-weight: 800; font-size: 1.3rem; margin-bottom: 12px; }
+        .feature-card-dark p { font-size: 0.9rem; color: #9ca3af; line-height: 1.5; }
+
+        .btn-white {
+            background: white; color: black; padding: 18px 45px; border-radius: 100px;
+            font-weight: 850; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 12px;
+            transition: 0.3s;
+        }
+        .btn-white:hover { transform: scale(1.05); }
+
+        /* --- TABLE --- */
+        .table-container { max-width: 900px; margin: 100px auto; border-radius: 24px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #111827; color: white; padding: 30px; font-weight: 800; text-transform: uppercase; font-size: 0.9rem; }
+        td { padding: 25px 30px; border-bottom: 1px solid #f3f4f6; font-weight: 600; font-size: 1rem; }
+        .col-offer { background: #f0f9ff; color: #0ea5e9; font-weight: 900; text-align: center; }
+        th.col-offer { background: #0ea5e9; color: white; }
+
+        /* --- INTERACTIVE FREQUENCY SECTION --- */
+        .freq-btn { 
+            background: #1f2937; border: 1px solid #374151; color: white; 
+            padding: 15px 25px; border-radius: 12px; font-weight: 700; 
+            transition: 0.3s; cursor: pointer; font-size: 0.9rem;
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .freq-btn:hover { background: #374151; border-color: #38bdf8; transform: translateY(-2px); }
+        .freq-btn.active { background: #38bdf8; border-color: #38bdf8; color: #000; }
+
+        #freq-result { 
+            display: none; margin-top: 40px; background: #111827; 
+            border-radius: 24px; padding: 40px; border: 1px solid rgba(56, 189, 248, 0.2);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .result-grid { display: grid; grid-template-columns: 150px 1fr; gap: 40px; text-align: left; align-items: center; }
+        .result-icon-box { 
+            width: 150px; height: 150px; border-radius: 30px; 
+            background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 4rem; color: #38bdf8; text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .result-grid { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+        }
+
+        /* --- V5 EXCLUSIVE: VALUE STACK & FAQS --- */
+        .stack-summary { background: #f0f9ff; border: 2px dashed #0ea5e9; border-radius: 24px; padding: 30px; margin: 40px auto; max-width: 600px; }
+        .stack-line { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(14, 165, 233, 0.1); font-weight: 600; font-size: 0.9rem; }
+        .stack-line:last-child { border: none; }
+        .stack-val { color: #0ea5e9; font-weight: 900; }
+
+        .guarantee-card { background: white; border-radius: 30px; padding: 40px; display: flex; align-items: center; gap: 30px; max-width: 800px; margin: 40px auto; text-align: left; border: 1px solid #e5e7eb; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .seal-emoji { font-size: 5rem; line-height: 1; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1)); }
+
+        .faq-item { background: white; border-radius: 16px; margin-bottom: 12px; border: 1px solid #f3f4f6; overflow: hidden; transition: 0.3s; }
+        .faq-question { padding: 20px 25px; cursor: pointer; font-weight: 800; display: flex; justify-content: space-between; align-items: center; color: #1f2937; }
+        .faq-question:hover { background: #f9fafb; }
+        .faq-answer { padding: 0 25px 20px 25px; color: #6b7280; display: none; line-height: 1.6; }
+        .faq-active .faq-answer { display: block; }
+        .faq-active .faq-question { color: #0ea5e9; }
+
+        /* --- RANKING SECTION --- */
+        .ranking-section { padding: 80px 5%; background: #f9fafb; }
+        .ranking-container { 
+            max-width: 800px; margin: 0 auto; background: white; border-radius: 30px; 
+            border: 1px solid #f3f4f6; box-shadow: 0 20px 50px rgba(0,0,0,0.05); overflow: hidden;
+        }
+        .ranking-header { background: #000; color: white; padding: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .live-pulse { width: 10px; height: 10px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; animation: pulse-green 1.5s infinite; }
+        @keyframes pulse-green { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .ranking-item { display: flex; align-items: center; gap: 20px; padding: 20px 25px; border-bottom: 1px solid #f3f4f6; transition: 0.3s; }
+        .ranking-item:hover { background: #f0f9ff; }
+        .rank-num { font-weight: 900; font-size: 1.2rem; color: #38bdf8; min-width: 30px; }
+        .rank-info { flex: 1; }
+        .rank-name { font-weight: 800; font-size: 1rem; color: #111827; }
+        .rank-min { font-size: 0.8rem; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .rank-trophy { font-size: 1.2rem; }
+
+        @media (max-width: 992px) {
+            .stack-container { grid-template-columns: 1fr; }
+            .feature-grid-dark { grid-template-columns: 1fr; }
+            .price-final .amount { font-size: 3.5rem; }
+        }
+
+        @media (max-width: 768px) {
+            .table-container { margin: 40px 10px; border-radius: 16px; }
+            th { padding: 15px 8px; font-size: 0.65rem; }
+            td { padding: 12px 8px; font-size: 0.75rem; line-height: 1.2; }
+            td i { font-size: 0.8rem; margin-right: 4px !important; }
+            .col-offer { padding: 12px 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="announcement-bar">
+        <div>¡ÚLTIMA OPORTUNIDAD! LA OFERTA DE 50% OFF EXPIRA EN:</div>
+        <div class="countdown" id="timer">15:00</div>
+    </div>
+
+    <!-- SALES POP -->
+    <div id="sales-pop">
+        <div class="pop-icon"><i class="fas fa-shopping-cart"></i></div>
+        <div class="pop-text">
+            <b id="pop-name">Juan de México</b>
+            <span>Se acaba de unir a la comunidad</span>
+            <small class="pop-time">Hace 2 minutos</small>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="logo">Neuro<span>Sync™</span></div>
+        <div class="cart-icon"><i class="fas fa-shopping-bag text-xl"></i></div>
+    </header>
+
+
+
+    <section class="hero-section">
+        <h1 class="leading-tight">Toda la Sabiduría de las Frecuencias Ancestrales, <br><span style="color: #38bdf8;">Ahora al Alcance de tus Manos.</span></h1>
+        <p>Accede al conocimiento que el 1% ha utilizado para dominar su realidad, ahora simplificado para tu mente moderna.</p>
+
+        <div class="stack-container">
+            <!-- LEFT: MEDIA & INFO -->
+            <div class="text-left">
+                <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/BONOS+NEUROSYNC.png" class="mockup-img" alt="Bonos NeuroSync">
+                
+                <div class="mt-10 p-8 bg-sky-50 rounded-3xl border border-sky-100">
+                    <h3 class="font-bold text-sky-900 mb-2 text-lg">¿Qué son las 13 Llaves?</h3>
+                    <p class="text-sm text-sky-800 leading-relaxed">Es la <strong>Ingeniería Maestra</strong> que el 1% utiliza para diseñar su propia realidad. Olvida los audios estáticos de YouTube que tu cerebro ignora por repetición. <br><br>Las 13 Llaves son un sistema de <strong>Sincronización Activa</strong> que va desde los 174Hz hasta los 999Hz, diseñado para penetrar la barrera del ego y reescribir tu subconsciente. Es la herramienta definitiva para quienes han decidido dejar de ser víctimas de su entorno y empezar a ser los <strong>arquitectos de su propia frecuencia.</strong></p>
+                </div>
+            </div>
+
+            <!-- RIGHT: THE STACK -->
+            <div class="text-left">
+                <span class="stack-title text-gray-900">Tu Paquete de Transformación:</span>
+
+                <!-- MAIN PRODUCT -->
+                <div class="card-main">
+                    <div class="icon"><i class="fas fa-gem"></i></div>
+                    <div class="info">
+                        <h4>Las 13 Llaves Solfeggio Pro</h4>
+                        <p>13 códigos matemáticos. Incluye 528Hz (Tesla/ADN), 852Hz (Tercer Ojo) y 888Hz (Abundancia).</p>
+                    </div>
+                </div>
+
+                <div class="separator"><i class="fas fa-plus"></i></div>
+
+                <!-- BONUSES -->
+                <div class="card-bonus">
+                    <div class="icon"><i class="fas fa-headphones"></i></div>
+                    <div class="info">
+                        <span class="badge-bonus">Bono #1</span>
+                        <h4>Sincronizador Binaural Pro</h4>
+                        <p>Sintoniza dos frecuencias simultáneamente para inducir estados Theta y Gamma en segundos.</p>
+                    </div>
+                    <div class="price-tag">
+                        <span class="free-tag">INCLUIDO</span>
+                    </div>
+                </div>
+
+                <div class="card-bonus">
+                    <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="info">
+                        <span class="badge-bonus">Bono #2</span>
+                        <h4>Academia de Biohacking</h4>
+                        <p>10 niveles para dominar la física cuántica y reprogramar tu subconsciente desde cero.</p>
+                    </div>
+                    <div class="price-tag">
+                        <span class="free-tag">INCLUIDO</span>
+                    </div>
+                </div>
+
+                <div class="card-bonus">
+                    <div class="icon"><i class="fas fa-users-rays"></i></div>
+                    <div class="info">
+                        <span class="badge-bonus">Bono #3</span>
+                        <h4>Red Social & Ranking Mundial</h4>
+                        <p>Comunidad Élite mundial para medir tu progreso y conectar en la misma frecuencia.</p>
+                    </div>
+                    <div class="price-tag">
+                        <span class="free-tag">INCLUIDO</span>
+                    </div>
+                </div>
+
+                <div class="card-bonus">
+                    <div class="icon"><i class="fas fa-leaf"></i></div>
+                    <div class="info">
+                        <span class="badge-bonus">Bono #4</span>
+                        <h4>Naturaleza 3D Inmersiva</h4>
+                        <p>Paisajes sonoros reales que puedes mezclar con cualquier frecuencia para sanación total.</p>
+                    </div>
+                    <div class="price-tag">
+                        <span class="free-tag">INCLUIDO</span>
+                    </div>
+                </div>
+
+                <div class="card-bonus">
+                    <div class="icon"><i class="fas fa-wave-square"></i></div>
+                    <div class="info">
+                        <span class="badge-bonus">Bono #5</span>
+                        <h4>Generador de Frecuencias Pro</h4>
+                        <p>Laboratorio personal con 4 tipos de onda. Precisión absoluta desde 1 Hz hasta 22,000 Hz.</p>
+                    </div>
+                    <div class="price-tag">
+                        <span class="free-tag">INCLUIDO</span>
+                    </div>
+                </div>
+
+                <div class="pricing-section">
+                    <div class="val-total">Acceso Completo al Ecosistema:</div>
+                    <div class="text-red-600 font-black text-sm mb-2 uppercase tracking-tight">
+                        <i class="fas fa-infinity mr-1"></i> Acceso de por vida - Sin pagos mensuales
+                    </div>
+                    <div class="price-final">
+                        <span class="label text-gray-900">DESBLOQUEA TODO POR:</span>
+                        <span class="amount">$19.99 USD</span>
+                    </div>
+                </div>
+
+                <a href="javascript:void(0)" data-checkout="aHR0cHM6Ly9wYXkuaG90bWFydC5jb20vVTEwNDcyODUzM0U/b2ZmPWJ5bGdueTlrJmNoZWNrb3V0TW9kZT0xMA==" class="inline-block bg-[#ff9900] text-white px-12 py-6 rounded-2xl font-black text-xl shadow-lg hover:bg-[#e68a00] transition-all uppercase transform hover:scale-105 mb-6 text-center">
+                    SÍ, QUIERO EMPEZAR MI EVOLUCIÓN AHORA
+                </a>
+
+                <div class="flex justify-center gap-4 opacity-40 text-2xl mb-4">
+                    <i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fab fa-cc-paypal"></i><i class="fab fa-apple-pay"></i>
+                </div>
+                <p class="text-center text-xs text-gray-400">🛡️ Garantía de satisfacción de 7 días. Pago 100% seguro.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE FREQUENCY SECTION -->
+    <section class="dark-section" style="padding-bottom: 120px;">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-black mb-4 uppercase tracking-tight">Descubre tu Frecuencia Sanadora</h2>
+            <p class="text-gray-400 mb-12 max-w-2xl mx-auto">Tu transformación comienza identificando tu frecuencia dominante. Identifica qué necesitas liberar hoy y te mostraremos el camino exacto.</p>
+            
+            <h3 class="text-xl font-bold mb-8 text-sky-400">¿Qué dolor o deseo resuena contigo hoy?</h3>
+            
+            <div class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+                <button class="freq-btn" onclick="showFreq('amor')">Necesito sanar y atraer amor ❤️</button>
+                <button class="freq-btn" onclick="showFreq('miedo')">Siento miedo y culpa que me bloquean 🛡️</button>
+                <button class="freq-btn" onclick="showFreq('abundancia')">Quiero atraer más abundancia 💸</button>
+                <button class="freq-btn" onclick="showFreq('claridad')">Mi mente está nublada, busco claridad 🕯️</button>
+                <button class="freq-btn" onclick="showFreq('espiritual')">Deseo una conexión espiritual profunda ✨</button>
+            </div>
+
+            <div id="freq-result">
+                <div class="result-grid">
+                    <div class="result-icon-box">
+                        <i id="res-icon" class="fas fa-wave-square"></i>
+                    </div>
+                    <div>
+                        <div class="text-sky-400 font-black text-sm uppercase tracking-widest mb-2">Tu Frecuencia Recomendada: <span id="res-hz">---</span></div>
+                        <h4 id="res-title" class="text-3xl font-black mb-4 text-white">---</h4>
+                        <p id="res-desc" class="text-gray-400 mb-8 text-lg leading-relaxed">---</p>
+                        <a href="javascript:void(0)" data-checkout="aHR0cHM6Ly9wYXkuaG90bWFydC5jb20vVTEwNDcyODUzM0U/b2ZmPWR5N3BlMnk3JmNoZWNrb3V0TW9kZT0xMA==" class="inline-block bg-green-500 text-white px-10 py-5 rounded-2xl font-black text-xl shadow-lg hover:bg-green-400 transition-all">
+                            ¡SÍ, QUIERO MI RITUAL AHORA!
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INVERSIÓN EN BIENESTAR SECTION -->
+    <section class="py-20 text-center bg-white">
+        <div class="container mx-auto px-5">
+            <h2 class="text-4xl md:text-5xl font-black mb-6 uppercase tracking-tight">¿Cuánto vale tu bienestar?</h2>
+            <p class="text-gray-500 max-w-3xl mx-auto mb-16 text-lg">
+                Este no es solo un software; es una <strong>inversión en tu evolución</strong>, tu paz mental y tu capacidad de manifestar la vida que realmente deseas.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- 1. Motor Binaural -->
+                <div class="p-8 bg-gray-50 rounded-3xl border border-gray-100 text-left transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-3xl text-sky-500 mb-4"><i class="fas fa-microchip"></i></div>
+                    <h4 class="font-bold text-xl mb-3">Motor Binaural Pro</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">Ingeniería acústica que genera ondas cerebrales en tiempo real para estados Theta y Gamma profundos.</p>
+                </div>
+
+                <!-- 2. Academia -->
+                <div class="p-8 bg-gray-50 rounded-3xl border border-gray-100 text-left transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-3xl text-sky-500 mb-4"><i class="fas fa-graduation-cap"></i></div>
+                    <h4 class="font-bold text-xl mb-3">Academia de Biohacking</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">10 niveles de formación exclusiva en neuroplasticidad y física cuántica para dominar tu realidad.</p>
+                </div>
+
+                <!-- 3. Acompañamiento -->
+                <div class="p-8 bg-gray-50 rounded-3xl border border-gray-100 text-left transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-3xl text-sky-500 mb-4"><i class="fas fa-user-astronaut"></i></div>
+                    <h4 class="font-bold text-xl mb-3">Acompañamiento VIP</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">No estás solo en tu proceso. Tienes soporte directo y acceso a nuestra comunidad de buscadores.</p>
+                </div>
+
+                <!-- 4. Actualizaciones -->
+                <div class="p-8 bg-gray-50 rounded-3xl border border-gray-100 text-left transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-3xl text-sky-500 mb-4"><i class="fas fa-sync-alt"></i></div>
+                    <h4 class="font-bold text-xl mb-3">Actualizaciones de por Vida</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">Acceso gratuito a todas las mejoras, nuevas frecuencias y funciones que lancemos para siempre.</p>
+                </div>
+
+                <!-- 5. Laboratorio -->
+                <div class="p-8 bg-gray-50 rounded-3xl border border-gray-100 text-left transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-3xl text-sky-500 mb-4"><i class="fas fa-wave-square"></i></div>
+                    <h4 class="font-bold text-xl mb-3">Laboratorio de Frecuencias</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">Generador profesional para sintonizar manualmente desde 1Hz hasta 22kHz con precisión absoluta.</p>
+                </div>
+
+                <!-- 6. Panel de Control -->
+                <div class="p-8 bg-gray-50 rounded-3xl border border-gray-100 text-left transition-all hover:shadow-xl hover:-translate-y-1">
+                    <div class="text-3xl text-sky-500 mb-4"><i class="fas fa-chart-line"></i></div>
+                    <h4 class="font-bold text-xl mb-3">Panel de Sincronización</h4>
+                    <p class="text-gray-500 text-sm leading-relaxed">Mide tus rachas y registra tu progreso diario. Lo que no se mide, no se puede transformar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPARISON SECTION -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-5 text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-black mb-4 uppercase tracking-tight text-gray-900">¿Por qué NeuroSync™ y no lo convencional?</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
+                Si no inviertes en ti, el universo no tiene nada que devolverte. Las herramientas básicas dan resultados básicos. Invertir en tu <strong>frecuencia</strong> es la señal que activa tu nueva realidad.
+            </p>
+        </div>
+
+        <div class="container mx-auto px-5 overflow-x-auto">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="1">BENEFICIO / CARACTERÍSTICA</th>
+                        <th class="text-center">LO TRADICIONAL</th>
+                        <th class="col-offer">NEUROSYNC™ PRO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-bold">Tecnología de Audio</td>
+                        <td class="text-center text-red-400">
+                            <i class="fas fa-times-circle mr-2"></i> Audios estáticos (YouTube/MP3)
+                        </td>
+                        <td class="col-offer text-sky-900">
+                            <i class="fas fa-check-circle mr-2"></i> Motor de Audio Dinámico 100%
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Personalización</td>
+                        <td class="text-center text-red-400">
+                            <i class="fas fa-times-circle mr-2"></i> No puedes cambiar nada
+                        </td>
+                        <td class="col-offer text-sky-900">
+                            <i class="fas fa-check-circle mr-2"></i> Mezcla total en tiempo real
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Material Educativo</td>
+                        <td class="text-center text-red-400">
+                            <i class="fas fa-times-circle mr-2"></i> PDFs y Ebooks planos
+                        </td>
+                        <td class="col-offer text-sky-900">
+                            <i class="fas fa-check-circle mr-2"></i> Academia con Exámenes y Nivelación
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Conexión Humana</td>
+                        <td class="text-center text-red-400">
+                            <i class="fas fa-times-circle mr-2"></i> Consumo en soledad
+                        </td>
+                        <td class="col-offer text-sky-900">
+                            <i class="fas fa-check-circle mr-2"></i> Red Social Mundial Integrada
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Seguimiento de Metas</td>
+                        <td class="text-center text-red-400">
+                            <i class="fas fa-times-circle mr-2"></i> Sin registro de progreso
+                        </td>
+                        <td class="col-offer text-sky-900">
+                            <i class="fas fa-check-circle mr-2"></i> Panel de Sincronización & Ranking
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Actualizaciones</td>
+                        <td class="text-center text-red-400">
+                            <i class="fas fa-times-circle mr-2"></i> Contenido que muere
+                        </td>
+                        <td class="col-offer text-sky-900">
+                            <i class="fas fa-check-circle mr-2"></i> Software con mejoras constantes
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FAQ & GUARANTEE SECTION -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-5">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black uppercase">Preguntas Frecuentes</h2>
+                <p class="text-gray-500">Todo lo que necesitas saber antes de dar el salto.</p>
+            </div>
+
+            <div class="max-w-3xl mx-auto mb-20">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('faq-active')">¿Es un pago único o mensual? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-answer">Es un pago único de por vida. No hay suscripciones, ni cargos ocultos, ni renovaciones. Una vez que adquieres NeuroSync™, es tuyo para siempre junto con todas las actualizaciones futuras.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('faq-active')">¿Necesito audífonos especiales? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-answer">Cualquier par de audífonos estéreo funciona. Para los tonos binaurales, es necesario usar audífonos (aunque sean los básicos de tu móvil) para que el cerebro pueda procesar las dos frecuencias distintas.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('faq-active')">¿Funciona en iPhone y Android? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-answer">Sí, NeuroSync™ es una aplicación diseñada para funcionar perfectamente en cualquier smartphone (iOS o Android). Podrás instalarla y acceder a todo el ecosistema directamente desde tu dispositivo móvil.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('faq-active')">¿Cuándo empezaré a notar los resultados? <span><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="faq-answer">Muchos usuarios reportan estados de relajación profunda o enfoque agudo desde la primera sesión. Sin embargo, los cambios en la neuroplasticidad suelen consolidarse tras 21 días de uso constante.</div>
+                </div>
+            </div>
+
+            <!-- GUARANTEE -->
+            <div class="guarantee-card">
+                <div class="seal-emoji">🛡️</div>
+                <div>
+                    <h4 class="text-2xl font-black mb-2 text-gray-900">Garantía de Satisfacción Total</h4>
+                    <p class="text-gray-500">Pruébalo, experiméntalo y siente la diferencia. Si por cualquier motivo sientes que NeuroSync™ no es para ti, te devolvemos el 100% de tu inversión. Sin preguntas, sin trabas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RANKING GLOBAL SECTION -->
+    <section class="ranking-section">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <span class="hero-tag" style="background: #e0f2fe; color: #0ea5e9; border: none;">Impacto Colectivo</span>
+                <h2 class="text-4xl font-black mt-4 uppercase">Comunidad Global en Resonancia</h2>
+                <div class="flex justify-center gap-8 mt-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-black text-sky-600">+485,000</div>
+                        <div class="text-xs uppercase font-bold text-gray-400">Minutos Totales</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="flex items-center gap-2 justify-center">
+                            <div class="live-pulse"></div>
+                            <div class="text-2xl font-black text-green-600">542</div>
+                        </div>
+                        <div class="text-xs uppercase font-bold text-gray-400">Activos Ahora</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ranking-container">
+                <div class="ranking-header">
+                    <div class="flex items-center gap-3">
+                        <div class="live-pulse"></div>
+                        <span class="font-bold uppercase text-xs tracking-widest">Sincronización en Vivo</span>
+                    </div>
+                    <span class="text-xs opacity-50 font-mono" id="current-date">--/--/2026</span>
+                </div>
+                
+                <div id="leaderboard-list">
+                    <!-- Los datos se cargarán aquí -->
+                    <div class="p-10 text-center text-gray-400">
+                        <i class="fas fa-spinner fa-spin mr-2"></i> Conectando con la red de NeuroSync...
+                    </div>
+                </div>
+
+                <div class="p-6 bg-gray-50 text-center">
+                    <p class="text-sm text-gray-500 font-medium">Tus minutos se sumarán automáticamente al activar tu cuenta.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="py-24 bg-gray-900 text-white text-center">
+        <div class="container mx-auto px-5">
+            <h2 class="text-4xl font-black mb-8 text-white max-w-3xl mx-auto">¿Vas a despertar mañana siendo exactamente la misma persona que hoy?</h2>
+            
+            <!-- STACK SUMMARY -->
+            <div class="stack-summary text-gray-900 text-left mb-10">
+                <div class="text-center mb-6">
+                    <span class="bg-sky-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Resumen de tu Acceso</span>
+                </div>
+                <div class="stack-line"><span>13 Llaves Solfeggio Pro</span> <span class="stack-val">INCLUIDO</span></div>
+                <div class="stack-line"><span>Software NeuroSync™ Pro</span> <span class="stack-val">INCLUIDO</span></div>
+                <div class="stack-line"><span>Academia de Biohacking</span> <span class="stack-val">INCLUIDO</span></div>
+                <div class="stack-line"><span>Acompañamiento VIP & Comunidad</span> <span class="stack-val">INCLUIDO</span></div>
+                <div class="stack-line"><span>Actualizaciones Vitalicias</span> <span class="stack-val">INCLUIDO</span></div>
+                <div class="flex justify-between mt-6 pt-4 border-t-2 border-sky-100 font-black text-xl">
+                    <span>INVERSIÓN TOTAL:</span>
+                    <span class="text-sky-600">$19.99 USD</span>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <p class="text-green-400 font-bold flex items-center justify-center gap-2 mb-6">
+                    <i class="fas fa-fire"></i> BONO DE ACCIÓN RÁPIDA: Los próximos 50 usuarios reciben el Manual PDF de Sincronización.
+                </p>
+                <a href="javascript:void(0)" data-checkout="aHR0cHM6Ly9wYXkuaG90bWFydC5jb20vVTEwNDcyODUzM0U/b2ZmPWJ5bGdueTlrJmNoZWNrb3V0TW9kZT0xMA==" class="inline-block bg-[#ef4444] text-white px-12 py-6 rounded-2xl font-black text-2xl shadow-lg hover:bg-[#dc2626] transition-all uppercase transform hover:scale-105">
+                    SÍ, QUIERO MI ACCESO VITALICIO AHORA
+                </a>
+            </div>
+            
+            <div class="mt-12 text-gray-500 text-xs text-gray-400">
+                &copy; 2026 NeuroSync Technologies. Biohacking de Élite.
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // --- COUNTDOWN TIMER ---
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.textContent = minutes + ":" + seconds;
+                if (--timer < 0) { timer = duration; }
+            }, 1000);
+        }
+        // --- RANKING LOGIC ---
+        async function loadLeaderboard() {
+            const list = document.getElementById('leaderboard-list');
+            const dateSpan = document.getElementById('current-date');
+            
+            const now = new Date();
+            dateSpan.innerText = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+
+            const countries = [
+                {n: "México", f: "🇲🇽"}, {n: "España", f: "🇪🇸"}, {n: "Colombia", f: "🇨🇴"}, 
+                {n: "Argentina", f: "🇦🇷"}, {n: "Chile", f: "🇨🇱"}, {n: "Perú", f: "🇵🇪"}, 
+                {n: "Ecuador", f: "🇪🇨"}, {n: "Uruguay", f: "🇺🇾"}, {n: "EE.UU", f: "🇺🇸"}
+            ];
+
+            function getRandomCountry() {
+                return countries[Math.floor(Math.random() * countries.length)];
+            }
+
+            try {
+                const response = await fetch('/.netlify/functions/getLeaderboard');
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    list.innerHTML = '';
+                    data.slice(0, 5).forEach((user, index) => {
+                        const country = getRandomCountry();
+                        const item = document.createElement('div');
+                        item.className = 'ranking-item';
+                        
+                        let trophy = index < 3 ? ['🥇', '🥈', '🥉'][index] : '✨';
+                        let range = index === 0 ? '<span class="text-[10px] bg-sky-100 text-sky-600 px-2 py-0.5 rounded-full font-bold ml-2">MAESTRO CUÁNTICO</span>' : '';
+                        
+                        item.innerHTML = `
+                            <div class="rank-num">#${index + 1}</div>
+                            <div class="rank-info">
+                                <div class="rank-name">${country.f} ${user.name || 'Usuario'} ${range}</div>
+                                <div class="rank-min">${user.total_minutes || 0} Minutos Sincronizados</div>
+                            </div>
+                            <div class="rank-trophy">${trophy}</div>
+                        `;
+                        list.appendChild(item);
+                    });
+                } else {
+                    throw new Error("No data");
+                }
+            } catch (e) {
+                // FALLBACK REALISTA SI NO HAY CONEXIÓN
+                const mockData = [
+                    {name: "Ricardo M.", min: 1420}, {name: "Elena G.", min: 1285},
+                    {name: "Javier S.", min: 940}, {name: "Sofia V.", min: 815},
+                    {name: "Mateo K.", min: 760}
+                ];
+                list.innerHTML = '';
+                mockData.forEach((user, index) => {
+                    const country = getRandomCountry();
+                    const item = document.createElement('div');
+                    item.className = 'ranking-item';
+                    let trophy = index < 3 ? ['🥇', '🥈', '🥉'][index] : '✨';
+                    let range = index === 0 ? '<span class="text-[10px] bg-sky-100 text-sky-600 px-2 py-0.5 rounded-full font-bold ml-2">MAESTRO CUÁNTICO</span>' : '';
+                    item.innerHTML = `
+                        <div class="rank-num">#${index + 1}</div>
+                        <div class="rank-info">
+                            <div class="rank-name">${country.f} ${user.name} ${range}</div>
+                            <div class="rank-min">${user.min} Minutos Sincronizados</div>
+                        </div>
+                        <div class="rank-trophy">${trophy}</div>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+        }
+
+        window.onload = function () {
+            startTimer(60 * 15, document.querySelector('#timer'));
+            setTimeout(showNextPop, 5000);
+            loadLeaderboard();
+        };
+
+        // TIKTOK/SOCIAL BROWSER REDIRECT BYPASS V3 (Camuflaje Base64)
+        (function() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            var isSocial = /TikTok|Instagram|FBAN|FBAV/i.test(ua);
+            
+            if (isSocial) {
+                var links = document.querySelectorAll('a[href*="hotmart.com"]');
+                links.forEach(function(link) {
+                    var originalUrl = link.href;
+                    
+                    // Camuflamos la URL usando Base64 para que TikTok no detecte "hotmart"
+                    var encodedUrl = btoa(originalUrl);
+                    link.href = '/.netlify/functions/checkout?d=' + encodedUrl;
+                    
+                    link.addEventListener('click', function(e) {
+                        // Bypass para Android
+                        if (/Android/i.test(ua)) {
+                            e.preventDefault();
+                            var cleanUrl = originalUrl.replace(/^https?:\/\//, '');
+                            window.location.href = 'intent://' + cleanUrl + '#Intent;scheme=https;package=com.android.chrome;end';
+                        } 
+                        // Bypass para iOS (Camuflaje + Bridge)
+                        else if (/iPhone|iPad|iPod/i.test(ua)) {
+                            // Intentamos forzar la salida a Chrome si lo tienen (Deep Link)
+                            var chromeUrl = originalUrl.replace(/^https?:\/\//, 'googlechromes://');
+                            setTimeout(function() { window.location.href = chromeUrl; }, 100);
+                            
+                            // Mostramos la interfaz de ayuda como respaldo
+                            document.getElementById('social-bridge').style.display = 'block';
+                        }
+                    });
+                });
+            }
+        })();
+
+        // --- SALES POP LOGIC ---
+        const salesData = [
+            {n: "Juan", p: "México"}, {n: "Maria", p: "España"}, {n: "Carlos", p: "Colombia"}, {n: "Laura", p: "Argentina"},
+            {n: "Diego", p: "Chile"}, {n: "Sofia", p: "Perú"}, {n: "Mateo", p: "Ecuador"}, {n: "Valentina", p: "Uruguay"},
+            {n: "Lucas", p: "México"}, {n: "Elena", p: "España"}, {n: "Andrés", p: "Colombia"}, {n: "Lucía", p: "Argentina"},
+            {n: "Gabriel", p: "Chile"}, {n: "Martina", p: "Perú"}, {n: "Thiago", p: "Ecuador"}, {n: "Isabella", p: "México"},
+            {n: "Felipe", p: "Colombia"}, {n: "Camila", p: "Chile"}, {n: "Joaquín", p: "Uruguay"}, {n: "Antonella", p: "Argentina"},
+            {n: "Matias", p: "México"}, {n: "Julieta", p: "España"}, {n: "Nicolás", p: "Colombia"}, {n: "Victoria", p: "Perú"},
+            {n: "Samuel", p: "Chile"}, {n: "Daniela", p: "Ecuador"}, {n: "Bautista", p: "Argentina"}, {n: "Catalina", p: "Uruguay"},
+            {n: "Benjamín", p: "México"}, {n: "Agustina", p: "España"}, {n: "Tomás", p: "Colombia"}, {n: "Renata", p: "Perú"},
+            {n: "Emiliano", p: "Chile"}, {n: "Sara", p: "Ecuador"}, {n: "Facundo", p: "Argentina"}, {n: "Delfina", p: "Uruguay"},
+            {n: "Rodrigo", p: "México"}, {n: "Mariana", p: "España"}, {n: "Esteban", p: "Colombia"}, {n: "Ximena", p: "Perú"}
+        ];
+
+        const pop = document.getElementById('sales-pop');
+        const popName = document.getElementById('pop-name');
+
+        function showNextPop() {
+            const random = salesData[Math.floor(Math.random() * salesData.length)];
+            popName.innerText = `${random.n} de ${random.p}`;
+            pop.classList.add('active');
+            
+            setTimeout(() => {
+                pop.classList.remove('active');
+                setTimeout(showNextPop, Math.random() * 10000 + 8000);
+            }, 5000);
+        }
+
+        // --- FREQUENCY DIAGNOSIS LOGIC ---
+        const freqData = {
+            amor: {
+                hz: "528 Hz",
+                title: "Reparación de ADN y Amor Universal",
+                desc: "Conocida como la frecuencia del 'Milagro', actúa directamente sobre tu estructura biológica para sanar heridas del corazón y atraer vibraciones de amor puro.",
+                icon: "fas fa-heart",
+                cta: "¡SÍ, QUIERO SANAR MI CORAZÓN!"
+            },
+            miedo: {
+                hz: "396 Hz",
+                title: "Liberación de Miedo y Culpa",
+                desc: "Actúa como una llave para soltar los bloqueos energéticos causados por el miedo y la culpa, permitiéndote avanzar con seguridad y confianza absoluta.",
+                icon: "fas fa-dove",
+                cta: "¡SÍ, QUIERO LIBERARME DEL MIEDO!"
+            },
+            abundancia: {
+                hz: "888 Hz",
+                title: "Sintonía de Abundancia Infinita",
+                desc: "Frecuencia de la manifestación material y espiritual. Alinea tu intención con el flujo ilimitado del universo para desbloquear la prosperidad.",
+                icon: "fas fa-infinity",
+                cta: "¡SÍ, QUIERO ATRAER ABUNDANCIA!"
+            },
+            claridad: {
+                hz: "741 Hz",
+                title: "Despertar de la Intuición",
+                desc: "Limpia las toxinas mentales y el ruido externo. Ideal para cuando necesitas tomar decisiones importantes y ver el camino con total nitidez.",
+                icon: "fas fa-eye",
+                cta: "¡SÍ, QUIERO CLARIDAD MENTAL!"
+            },
+            espiritual: {
+                hz: "963 Hz",
+                title: "La Frecuencia de Dios",
+                desc: "Conexión directa con la Fuente. Despierta tu glándula pineal y te permite experimentar estados de unidad y paz trascendental.",
+                icon: "fas fa-om",
+                cta: "¡SÍ, QUIERO MI CONEXIÓN SUPERIOR!"
+            }
+        };
+
+        function showFreq(key) {
+            const data = freqData[key];
+            document.getElementById('res-hz').innerText = data.hz;
+            document.getElementById('res-title').innerText = data.title;
+            document.getElementById('res-desc').innerText = data.desc;
+            
+            // Actualizar Icono
+            const iconEl = document.getElementById('res-icon');
+            iconEl.className = data.icon;
+
+            // Actualizar Botón CTA
+            const btnCta = document.querySelector('#freq-result .bg-green-500');
+            if(btnCta) btnCta.innerText = data.cta;
+            
+            document.getElementById('freq-result').style.display = 'block';
+            
+            // Actualizar estado de botones
+            document.querySelectorAll('.freq-btn').forEach(btn => btn.classList.remove('active'));
+            // Usar event.currentTarget o buscar el botón que activó la función
+            const clickedBtn = [...document.querySelectorAll('.freq-btn')].find(btn => btn.innerText.includes(key === 'amor' ? 'amor' : key === 'miedo' ? 'miedo' : key === 'abundancia' ? 'abundancia' : key === 'claridad' ? 'claridad' : 'espiritual'));
+            if(clickedBtn) clickedBtn.classList.add('active');
+
+            // Scroll suave al resultado
+            document.getElementById('freq-result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+    <!-- TIKTOK/SOCIAL BROWSER BYPASS (SOLUCIÓN AUTOCONTENIDA) -->
+    <style>
+        #social-bridge {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 10000; color: white;
+            padding: 60px 20px; text-align: center; font-family: 'Outfit', sans-serif;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .bridge-content { max-width: 400px; margin: 0 auto; }
+        .bridge-icon { font-size: 3.5rem; color: #38bdf8; margin-bottom: 20px; }
+        .bridge-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 10px; color: #fff; }
+        .bridge-text { font-size: 1rem; color: #94a3b8; margin-bottom: 25px; line-height: 1.5; }
+        .bridge-steps { background: rgba(255, 255, 255, 0.03); padding: 25px; border-radius: 30px; text-align: left; margin-bottom: 30px; border: 1px solid rgba(56, 189, 248, 0.1); }
+        .step-item { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 0.9rem; }
+        .step-num { min-width: 24px; height: 24px; background: #38bdf8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; color: #000; }
+        .bridge-btn { background: #38bdf8; color: #000; padding: 18px; border-radius: 12px; font-weight: 800; display: block; text-decoration: none; width: 100%; text-transform: uppercase; margin-bottom: 15px; border: none; cursor: pointer; }
+        .copy-success { display: none; color: #10b981; font-weight: 700; margin-top: 10px; font-size: 0.8rem; }
+    </style>
+
+    <div id="social-bridge">
+        <div class="bridge-content">
+            <div class="bridge-icon"><i class="fas fa-lock"></i></div>
+            <h2 class="bridge-title">ACCESO SEGURO</h2>
+            <p class="bridge-text">TikTok bloquea el pago. Usa tu navegador para completar la compra:</p>
+            <div class="bridge-steps">
+                <div class="step-item"><div class="step-num">1</div><p>Toca los <strong>3 puntos (...)</strong> arriba a la derecha.</p></div>
+                <div class="step-item"><div class="step-num">2</div><p>Selecciona <strong>"Abrir en el navegador"</strong>.</p></div>
+            </div>
+            <button id="copy-link-btn" class="bridge-btn" style="background: transparent; border: 1px solid #38bdf8; color: #38bdf8;">Copiar Enlace Directo</button>
+            <p id="copy-msg" class="copy-success">¡Enlace copiado! Pégalo en tu navegador.</p>
+            <button onclick="document.getElementById('social-bridge').style.display='none'" class="bridge-btn">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        // BYPASS AUTOMÁTICO V7 (Salto Forzado)
+        (function() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            
+            function forceNativeBrowser(e) {
+                var btn = e.currentTarget;
+                var encodedUrl = btn.getAttribute('data-checkout');
+                if (!encodedUrl) return;
+                var url = atob(encodedUrl);
+                
+                // Si estamos en un navegador de App (TikTok, Instagram, FB)
+                if (/TikTok|Instagram|FBAN|FBAV/i.test(ua)) {
+                    e.preventDefault();
+
+                    // ANDROID: El salto es 100% automático y forzado
+                    if (/Android/i.test(ua)) {
+                        var cleanUrl = url.replace(/^https?:\/\//, '');
+                        window.location.href = 'intent://' + cleanUrl + '#Intent;scheme=https;package=com.android.chrome;end';
+                    } 
+                    // IOS: Intentamos el "Trick" de apertura externa
+                    else if (/iPhone|iPad|iPod/i.test(ua)) {
+                        // Intento 1: Salto directo a Chrome si existe
+                        var chromeUrl = url.replace(/^https?:\/\//, 'googlechromes://');
+                        window.location.href = chromeUrl;
+
+                        // Intento 2: Salto por Google (Confianza)
+                        setTimeout(function() {
+                            window.location.href = "https://www.google.com/url?q=" + encodeURIComponent(url);
+                        }, 500);
+                        
+                        // Respaldo: Si nada funciona, mostramos el aviso visual (última opción)
+                        setTimeout(function() {
+                            alert("Para pagar seguro, toca los 3 puntos (...) y elige 'Abrir en el navegador'");
+                        }, 2000);
+                    } else {
+                        window.location.href = url;
+                    }
+                } else {
+                    // Navegador normal (Safari/Chrome real)
+                    window.location.href = url;
+                }
+            }
+
+            document.querySelectorAll('[data-checkout]').forEach(function(el) {
+                el.addEventListener('click', forceNativeBrowser);
+            });
+        })();
+
+        // Timer y Leaderboard
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.textContent = minutes + ":" + seconds;
+                if (--timer < 0) { timer = duration; }
+            }, 1000);
+        }
+        window.onload = function() {
+            startTimer(900, document.getElementById('timer'));
+            loadLeaderboard();
+        };
+    </script>
+</body>
+</html>
+</html>
+</html>

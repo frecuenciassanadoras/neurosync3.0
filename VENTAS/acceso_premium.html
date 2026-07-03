@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Premium - NeuroSync Ecosystem</title>
+    <style>
+        /* RESET & BASE STYLES */
+        body, html { margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; background-color: #0a0b14; color: #ffffff; }
+        table { border-collapse: collapse; width: 100%; }
+        td { padding: 0; }
+        a { text-decoration: none; }
+        img { max-width: 100%; border: 0; display: block; }
+
+        /* CONTAINER */
+        .container { max-width: 600px; margin: 0 auto; background-color: #111420; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); }
+
+        /* HEADER */
+        .header-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 2px solid #00d4ff;
+        }
+        .header-title { font-size: 32px; font-weight: 900; margin: 0; letter-spacing: -0.5px; background: linear-gradient(to right, #00d4ff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #00d4ff; text-transform: uppercase; }
+        .header-subtitle { font-size: 14px; color: #94a3b8; margin-top: 8px; text-transform: uppercase; letter-spacing: 3px; font-weight: 500; }
+
+        /* CONTENT SECTIONS */
+        .main-content { padding: 40px 35px; }
+        .welcome-text { font-size: 18px; color: #e2e8f0; margin-bottom: 30px; text-align: center; font-weight: 300; }
+        .highlight { color: #00d4ff; font-weight: 600; }
+
+        /* ACCESS CARDS */
+        .access-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+        .card-header { display: flex; align-items: center; margin-bottom: 12px; }
+        .card-icon { font-size: 24px; margin-right: 12px; }
+        .card-title { font-size: 16px; font-weight: 700; color: #ffffff; margin: 0; }
+        .credential-box { background: #000000; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px dashed rgba(255,255,255,0.2); }
+        .label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px; }
+        .code { font-family: 'Courier New', monospace; font-size: 15px; color: #ffffff; font-weight: bold; letter-spacing: 1px; }
+
+        /* BUTTON */
+        .cta-container { text-align: center; margin: 40px 0; }
+        .btn-premium {
+            display: inline-block;
+            background: linear-gradient(90deg, #00d4ff 0%, #8b5cf6 100%);
+            color: #ffffff !important;
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+            border: none;
+        }
+
+        /* ECOSYSTEM INFO */
+        .ecosystem-section { background-color: #0a0b14; padding: 30px; border-radius: 12px; }
+        .eco-item { margin-bottom: 25px; }
+        .eco-tag { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; }
+        .tag-blue { background: rgba(0, 212, 255, 0.1); color: #00d4ff; border: 1px solid rgba(0, 212, 255, 0.2); }
+        .tag-green { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .tag-purple { background: rgba(167, 139, 250, 0.1); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.2); }
+        
+        /* FOOTER */
+        .footer { padding: 30px; text-align: center; background-color: #05060b; color: #475569; font-size: 12px; }
+        .footer a { color: #00d4ff; font-weight: 600; }
+
+        /* MOBILE OPTIMIZATION */
+        @media only screen and (max-width: 480px) {
+            .main-content { padding: 30px 20px; }
+            .header-title { font-size: 26px; }
+            .btn-premium { width: 100%; box-sizing: border-box; padding: 18px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" style="margin-top: 20px; margin-bottom: 20px;">
+        <!-- HEADER -->
+        <div class="header-gradient">
+            <h1 class="header-title">Acceso Concedido</h1>
+            <p class="header-subtitle">Tu Evolución Digital Comienza</p>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <p class="welcome-text">
+                Bienvenido a la nueva frontera de la <span class="highlight">neuro-tecnología</span>. 
+                Tus herramientas de manifestación y reprogramación cuántica ya están activas.
+            </p>
+
+            <!-- USER INFO -->
+            <div style="background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.2); padding: 15px; border-radius: 10px; margin-bottom: 30px; text-align: center;">
+                <span class="label" style="color: #00d4ff;">Usuario Global de Acceso</span>
+                <span style="font-size: 16px; font-weight: bold; color: #ffffff;">Tu correo electrónico de compra</span>
+            </div>
+
+            <!-- CREDENTIAL CARDS -->
+            <div class="access-card" style="border-left: 4px solid #10b981;">
+                <p class="card-title"><span class="card-icon">🎧</span> Frecuencias Sanadoras</p>
+                <div class="credential-box">
+                    <span class="label">Clave Personal</span>
+                    <span class="code">[ESCRIBE_AQUI_CLAVE_1]</span>
+                </div>
+            </div>
+
+            <div class="access-card" style="border-left: 4px solid #00d4ff;">
+                <p class="card-title"><span class="card-icon">🧠</span> NeuroSync App</p>
+                <div class="credential-box">
+                    <span class="label">Clave Personal</span>
+                    <span class="code">[ESCRIBE_AQUI_CLAVE_2]</span>
+                </div>
+            </div>
+
+            <div class="access-card" style="border-left: 4px solid #a78bfa;">
+                <p class="card-title"><span class="card-icon">✨</span> Taller Energía Interior</p>
+                <div class="credential-box">
+                    <span class="label">Clave Personal</span>
+                    <span class="code">[ESCRIBE_AQUI_CLAVE_3]</span>
+                </div>
+            </div>
+
+            <!-- CALL TO ACTION -->
+            <div class="cta-container">
+                <a href="https://neurosync20.netlify.app/" target="_blank" class="btn-premium">
+                    ENTRAR AL SERVIDOR
+                </a>
+            </div>
+
+            <!-- ECOSYSTEM DESCRIPTION -->
+            <div class="ecosystem-section">
+                <h3 style="font-size: 18px; margin-top: 0; color: #ffffff; text-align: center; margin-bottom: 25px;">Tu Arsenal de Transformación</h3>
+                
+                <div class="eco-item">
+                    <span class="eco-tag tag-green">Nivel 1: Pasivo</span>
+                    <p style="font-size: 14px; margin: 5px 0 0 0; color: #cbd5e1;"><strong>Reproductor de Frecuencias:</strong> Programación subconsciente profunda durante el sueño.</p>
+                </div>
+
+                <div class="eco-item">
+                    <span class="eco-tag tag-blue">Nivel 2: Activo</span>
+                    <p style="font-size: 14px; margin: 5px 0 0 0; color: #cbd5e1;"><strong>NeuroSync App:</strong> Herramienta de enfoque y estados de flujo instantáneos.</p>
+                </div>
+
+                <div class="eco-item">
+                    <span class="eco-tag tag-purple">Nivel 3: Conocimiento</span>
+                    <p style="font-size: 14px; margin: 5px 0 0 0; color: #cbd5e1;"><strong>Taller de Energía:</strong> Domina las leyes que rigen tu realidad.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p style="margin-bottom: 10px;">¿Necesitas soporte técnico con tus credenciales?</p>
+            <p style="margin-bottom: 20px;"><a href="https://wa.link/3yc8pr" target="_blank">Contactar Soporte VIP vía WhatsApp</a></p>
+            <p style="color: #334155; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                © 2026 NeuroSync Labs. Todos los derechos reservados.<br>
+                Tecnología para la evolución de la consciencia humana.
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

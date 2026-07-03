@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroSync | Soberanía Biológica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --accent: #ff0055;
+            --bg: #050505;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --glow: 0 0 20px rgba(0, 242, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        header {
+            padding: 2rem 0;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Hero --- */
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 7vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .glitch-text {
+            color: var(--primary);
+            display: block;
+            text-shadow: 2px 2px var(--accent);
+            animation: glitch 1s infinite alternate;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-viz-container {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            margin: 2rem auto;
+            position: relative;
+            background: radial-gradient(circle at center, rgba(0, 242, 255, 0.05) 0%, transparent 70%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .neural-network {
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .node {
+            fill: var(--primary);
+            filter: drop-shadow(0 0 5px var(--primary));
+            animation: node-pulse 3s infinite alternate;
+        }
+
+        .connection {
+            stroke: var(--primary);
+            stroke-width: 0.5;
+            opacity: 0.2;
+            stroke-dasharray: 100;
+            animation: flow 10s infinite linear;
+        }
+
+        .pulse-line {
+            stroke: var(--primary);
+            stroke-width: 1.5;
+            stroke-dasharray: 10, 100;
+            animation: pulse-flow 3s infinite linear;
+            filter: drop-shadow(0 0 8px var(--primary));
+        }
+
+        @keyframes node-pulse {
+            0% { r: 2; opacity: 0.4; }
+            100% { r: 4; opacity: 1; }
+        }
+
+        @keyframes flow {
+            from { stroke-dashoffset: 200; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes pulse-flow {
+            0% { stroke-dashoffset: 110; opacity: 0; }
+            50% { opacity: 1; }
+            100% { stroke-dashoffset: 0; opacity: 0; }
+        }
+
+        /* --- Problem --- */
+        .problem-section {
+            padding: 6rem 0;
+            background: radial-gradient(circle at center, rgba(112, 0, 255, 0.05) 0%, transparent 70%);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- Decision Section --- */
+        .decision-intro {
+            padding: 8rem 0 2rem;
+            text-align: center;
+        }
+
+        .decision-intro h2 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .orbs-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 450px;
+            position: relative;
+            margin: 4rem 0;
+        }
+
+        .orb {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+
+        /* --- Orbe Roja (Matrix - Caos) --- */
+        .red-orb {
+            background: radial-gradient(circle at center, #ff0055 0%, #330011 70%, transparent 100%);
+            box-shadow: 0 0 40px #ff0055, 0 0 80px rgba(255, 0, 85, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.3);
+            left: 20%;
+            animation: chaos-red 0.15s infinite alternate, glitch-flicker 3s infinite;
+        }
+
+        /* --- Orbe Azul (Soberanía - Armonía) --- */
+        .blue-orb {
+            background: radial-gradient(circle at center, #00f2ff 0%, #004455 70%, transparent 100%);
+            box-shadow: 0 0 40px #00f2ff, 0 0 80px rgba(0, 242, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            right: 20%;
+            animation: breathing-blue 8s infinite ease-in-out;
+        }
+
+        @keyframes breathing-blue {
+            0%, 100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 40px #00f2ff, 0 0 80px rgba(0, 242, 255, 0.4); }
+            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 70px #00f2ff, 0 0 140px rgba(0, 242, 255, 0.6); }
+        }
+
+        @keyframes chaos-red {
+            0% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-2px, 2px) scale(1.02); }
+            50% { transform: translate(2px, -2px) scale(0.98); opacity: 0.8; }
+            75% { transform: translate(-2px, -2px) scale(1.01); }
+            100% { transform: translate(2px, 2px) scale(1); }
+        }
+
+        @keyframes glitch-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; filter: hue-rotate(0deg); }
+            20%, 24%, 55% { opacity: 0.3; filter: hue-rotate(90deg) brightness(2); }
+        }
+
+        .clash-impact { display: none; } /* Ya no hay choque */
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .choice-grid { grid-template-columns: 1fr; }
+        }
+
+        .choice-card {
+            padding: 3rem;
+            border-radius: 30px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .victim-card {
+            border: 1px solid rgba(255, 0, 85, 0.3);
+            background: rgba(255, 0, 85, 0.02);
+        }
+
+        .sovereign-card {
+            border: 1px solid rgba(0, 242, 255, 0.4);
+            background: rgba(0, 242, 255, 0.05);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
+        }
+
+        .choice-card ul {
+            list-style: none;
+            text-align: left;
+            margin-top: 2rem;
+        }
+
+        .choice-card li {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* --- CTA --- */
+        .cta-section {
+            padding: 8rem 0;
+            text-align: center;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, rgba(112, 0, 255, 0.2) 0%, rgba(0, 242, 255, 0.1) 100%);
+            padding: 5rem 2rem;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1.5rem 3.5rem;
+            background: var(--text);
+            color: var(--bg);
+            text-decoration: none;
+            font-weight: 800;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+    </style>
+</head>
+<body>
+    <div id="warningBanner" style="background: rgba(255, 0, 85, 0.1); border-bottom: 1px solid rgba(255, 0, 85, 0.3); padding: 0.8rem 1rem; text-align: center; font-size: 0.75rem; letter-spacing: 1px; color: var(--text); position: sticky; top: 0; z-index: 20000; backdrop-filter: blur(5px);">
+        ⚠️ <span style="font-weight: 800; color: var(--accent);">ADVERTENCIA CRÍTICA:</span> Si realmente valoras tu futuro, no te tomará más de 5 minutos leer esto. Si no tienes 5 minutos para invertir en tu propia vida, el sistema ya ganó por ti.
+    </div>
+
+    <header>
+        <div class="logo">NEUROSYNC.</div>
+    </header>
+
+    <main>
+        <section class="container hero">
+            <div style="background: rgba(0, 242, 255, 0.1); border: 1px solid var(--primary); display: inline-block; padding: 0.4rem 1.2rem; border-radius: 50px; font-size: 0.7rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--primary); letter-spacing: 1px;">SOLO PARA EL 1% QUE BUSCA LA LIBERTAD</div>
+            <h1>DEJA DE SOBREVIVIR EN EL CAOS. <span class="glitch-text">DOMINA TU FRECUENCIA.</span></h1>
+            <p style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 0.5rem; font-weight: 700;">El sistema no quiere que conozcas esto</p>
+            <p>Elimina la neblina mental y recupera tu claridad al 100% en pocas sesiones.</p>
+            
+            <div class="hero-viz-container">
+                <svg class="neural-network" viewBox="0 0 800 400">
+                    <!-- Conexiones base -->
+                    <path class="connection" d="M100,200 L200,100 L300,250 L450,150 L600,300 L700,200" fill="none"/>
+                    <path class="connection" d="M150,300 L250,200 L400,350 L550,250 L650,100" fill="none"/>
+                    <path class="connection" d="M100,200 L400,200 L700,200" fill="none"/>
+                    
+                    <!-- Líneas de pulso animadas -->
+                    <path class="pulse-line" d="M100,200 L200,100 L300,250 L450,150 L600,300 L700,200" fill="none"/>
+                    <path class="pulse-line" d="M150,300 L250,200 L400,350 L550,250 L650,100" fill="none"/>
+                    
+                    <!-- Nodos (Neuronas) -->
+                    <circle class="node" cx="100" cy="200" r="3"/>
+                    <circle class="node" cx="200" cy="100" r="3"/>
+                    <circle class="node" cx="300" cy="250" r="3"/>
+                    <circle class="node" cx="450" cy="150" r="3"/>
+                    <circle class="node" cx="600" cy="300" r="3"/>
+                    <circle class="node" cx="700" cy="200" r="3"/>
+                    <circle class="node" cx="150" cy="300" r="3"/>
+                    <circle class="node" cx="250" cy="200" r="3"/>
+                    <circle class="node" cx="400" cy="350" r="3"/>
+                    <circle class="node" cx="550" cy="250" r="3"/>
+                    <circle class="node" cx="650" cy="100" r="3"/>
+                </svg>
+            </div>
+        </section>
+
+        <section class="container problem-section">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h2 style="color: var(--accent);">Tu Biología bajo Secuestro</h2>
+                <p style="color: var(--text-dim); margin-top: 1.5rem; font-size: 1.1rem;">
+                    La Matrix no solo está en las pantallas; está en tus nervios. El nervio vago está siendo bombardeado por señales que forzan a tu cerebro a un estado de <strong>Esclavitud en Beta Alto</strong>. Vives en una respuesta de "lucha o huida" perpetua, drenando tu energía vital para alimentar un sistema que te quiere dócil y agotado.
+                </p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3 style="color: var(--accent);">Sobrecarga de Frecuencia</h3>
+                    <p style="color: var(--text-dim);">Miles de señales invisibles interfieren con tus ritmos naturales cada segundo, bloqueando tu capacidad de manifestación.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--accent);">Atrapado en Alerta</h3>
+                    <p style="color: var(--text-dim);">Tu cerebro nunca desciende a los estados de reparación profunda (Alfa/Theta). Tu mente está en una prisión de ruido constante.</p>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--accent);">Estrés Sistémico y Salud</h3>
+                    <p style="color: var(--text-dim);">El nervio vago pierde su tono mientras el <strong>Cortisol</strong> inunda tu sistema, provocando inflamación crónica y bloqueando tu regeneración celular. Tu salud se apaga silenciosamente.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container decision-intro">
+            <h2>MOMENTO DE LA <span style="color: var(--primary);">VERDAD</span> :</h2>
+            <p style="font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-top: 1rem;">
+                ¿Vas a seguir obedeciendo al sistema o vas a tomar control de tu destino?
+            </p>
+
+            <div class="orbs-container">
+                <div class="clash-impact"></div>
+                <div class="orb red-orb"></div>
+                <div class="orb blue-orb"></div>
+            </div>
+
+            <div class="choice-grid">
+                <!-- EL 99% -->
+                <div class="choice-card victim-card">
+                    <h3 style="color: var(--accent); font-size: 1.8rem; margin-bottom: 1rem;">El 99%</h3>
+                    <p style="color: var(--accent); font-weight: 700; opacity: 0.8;">EL REBAÑO DOMINADO</p>
+                    <ul>
+                        <li>❌ <strong>Mente de Niebla:</strong> Aceptar que vivir cansado y sin foco es "normal".</li>
+                        <li>❌ <strong>Esclavitud Biológica:</strong> El sistema decide cómo te sientes, qué compras y cómo piensas.</li>
+                        <li>❌ <strong>Vicios y Distracción:</strong> Consumir veneno auditivo y visual que drena tu energía vital y va consumiendo tu salud lentamente.</li>
+                        <li>❌ <strong>Destino:</strong> Una vida mediocre, llena de arrepentimiento y debilidad.</li>
+                    </ul>
+                </div>
+
+                <!-- EL 1% -->
+                <div class="choice-card sovereign-card">
+                    <h3 style="color: var(--primary); font-size: 1.8rem; margin-bottom: 1rem;">El 1%</h3>
+                    <p style="color: var(--primary); font-weight: 700; opacity: 0.8;">LA ÉLITE SOBERANA</p>
+                    <ul>
+                        <li>✅ <strong>Claridad 100%:</strong> Enfoque láser para materializar abundancia y sueños sin esfuerzo.</li>
+                        <li>✅ <strong>Dominio Total:</strong> Eres el único arquitecto de tu frecuencia cerebral y tu realidad material.</li>
+                        <li>✅ <strong>Blindaje de Poder:</strong> Acceso al protocolo de <strong>Desbloqueo Total</strong> para liberarte del control del sistema y resetear tu biología a diario.</li>
+                        <li>✅ <strong>Destino:</strong> Una realidad diseñada por tu voluntad, salud de acero y soberanía mental absoluta.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="container transformation-section" style="padding: 6rem 0; border-top: 1px solid var(--border);">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="color: var(--primary); font-size: clamp(2rem, 6vw, 3.5rem);">EL CÓDIGO DE LA <span style="color: var(--text);">TRANSFORMACIÓN</span></h2>
+                <p style="color: var(--text-dim); max-width: 800px; margin: 1.5rem auto; font-size: 1.1rem;">
+                    No estamos aquí para darte "música relajante". Estamos aquí para <strong>alinear tu frecuencia con eso que más anhelas y transformar tu realidad</strong>. Las frecuencias de NeuroSync son el código maestro diseñado para hackear el ruido de la Matrix y devolverte el mando de tu destino.
+                </p>
+            </div>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                <div class="card" style="border-color: rgba(255, 0, 85, 0.2); background: rgba(255, 0, 85, 0.05);">
+                    <h3 style="color: var(--accent); margin-bottom: 1.5rem;">V1.0: EL ESCLAVO (ESTADO ACTUAL)</h3>
+                    <ul style="list-style: none; color: var(--text-dim);">
+                        <li style="margin-bottom: 1rem;">❌ <strong>Visión de Túnel:</strong> Solo ves problemas y obstáculos.</li>
+                        <li style="margin-bottom: 1rem;">❌ <strong>Drenaje de Energía:</strong> Te despiertas cansado y terminas el día agotado.</li>
+                        <li style="margin-bottom: 1rem;">❌ <strong>Ansiedad Constante:</strong> Tu sistema nervioso está en alerta roja permanente.</li>
+                        <li style="margin-bottom: 1rem;">❌ <strong>Víctima del Entorno:</strong> Tus emociones dependen de factores externos.</li>
+                        <li style="margin-bottom: 1rem;">❌ <strong>Vibras en Escasez:</strong> Atraes falta de recursos por pura resonancia negativa.</li>
+                        <li style="margin-bottom: 1rem;">❌ <strong>Degradación Sistémica:</strong> El sistema te enferma lentamente y te vuelve dependiente de químicos que destruyen tu salud en silencio.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-color: var(--primary); background: rgba(0, 242, 255, 0.05); box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);">
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem;">V2.0: EL SOBERANO (TU NUEVA REALIDAD)</h3>
+                    <ul style="list-style: none; color: var(--text);">
+                        <li style="margin-bottom: 1rem;">✅ <strong>Claridad Táctica:</strong> Ves oportunidades y patrones que el 99% ignora.</li>
+                        <li style="margin-bottom: 1rem;">✅ <strong>Energía Ilimitada:</strong> Tu cuerpo entra en modo de reparación profunda a diario.</li>
+                        <li style="margin-bottom: 1rem;">✅ <strong>Calma Imperturbable:</strong> Nada te saca de tu eje. Eres el ojo del huracán.</li>
+                        <li style="margin-bottom: 1rem;">✅ <strong>Arquitecto de Realidad:</strong> Eres tú quien dicta las reglas de tu juego.</li>
+                        <li style="margin-bottom: 1rem;">✅ <strong>Frecuencia de Abundancia:</strong> Sintonizas con la prosperidad y atraes riqueza y oportunidades por resonancia natural.</li>
+                        <li style="margin-bottom: 1rem;">✅ <strong>Regeneración Celular Profunda:</strong> Activas los mecanismos de autocuración, sanando tu cuerpo desde el nivel celular y restaurando tu vitalidad desde el ADN.</li>
+                    </ul>
+                </div>
+            </div>
+
+        <section class="container" style="padding: 6rem 0;">
+            <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 4rem 2rem; border-radius: 40px; text-align: center; position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--accent), var(--primary));"></div>
+                
+                <h2 style="font-size: clamp(1.8rem, 5vw, 2.8rem); margin-bottom: 1.5rem;">EL PROTOCOLO DE <span style="color: var(--primary);">REESCRITURA NEURAL</span></h2>
+                <p style="color: var(--primary); font-weight: 800; letter-spacing: 2px; margin-bottom: 3rem; text-transform: uppercase; font-size: 0.9rem;">No es magia. Es la ciencia prohibida que las mentes más brillantes usaron para dominar la materia.</p>
+
+                <!-- Brain Sync Viz Refined -->
+                <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; margin: 4rem 0; flex-wrap: wrap; perspective: 1000px;">
+                    <!-- Matrix State -->
+                    <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; align-items: center; padding: 2rem; border-radius: 30px; background: rgba(255, 0, 85, 0.03); border: 1px solid rgba(255, 0, 85, 0.1);">
+                        <p style="font-size: 0.75rem; color: var(--accent); margin-bottom: 2rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;">Estado Matrix</p>
+                        <div style="width: 140px; height: 140px; border: 2px solid var(--accent); border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; display: flex; align-items: center; justify-content: center; position: relative; animation: chaos-jitter 0.2s infinite, morph-shape 4s infinite alternate ease-in-out;">
+                            <span style="font-size: 3rem; filter: drop-shadow(0 0 10px var(--accent));">🧠</span>
+                            <div style="position: absolute; width: 100%; height: 100%; border-radius: inherit; background: radial-gradient(circle, rgba(255,0,85,0.2) 0%, transparent 70%);"></div>
+                        </div>
+                        <p style="margin-top: 2rem; font-size: 0.8rem; color: var(--accent); opacity: 0.7;">DESINCRONIZADO / CAOS</p>
+                    </div>
+                    
+                    <!-- Transition Bolt -->
+                    <div style="font-size: 2.5rem; color: var(--text-dim); animation: energy-pulse 2s infinite ease-in-out; text-shadow: 0 0 20px rgba(255,255,255,0.2);">⚡</div>
+
+                    <!-- Sovereign State -->
+                    <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; align-items: center; padding: 2rem; border-radius: 30px; background: rgba(0, 242, 255, 0.03); border: 1px solid rgba(0, 242, 255, 0.1); box-shadow: 0 0 50px rgba(0, 242, 255, 0.05);">
+                        <p style="font-size: 0.75rem; color: var(--primary); margin-bottom: 2rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;">Estado Soberano</p>
+                        <div style="width: 140px; height: 140px; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 0 40px var(--primary), inset 0 0 20px var(--primary); animation: breathing-blue 4s infinite ease-in-out;">
+                            <span style="font-size: 3rem; filter: drop-shadow(0 0 15px var(--primary));">💎</span>
+                            <div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle, rgba(0,242,255,0.3) 0%, transparent 70%);"></div>
+                        </div>
+                        <p style="margin-top: 2rem; font-size: 0.8rem; color: var(--primary); opacity: 0.7;">SINCRONIZADO / PODER</p>
+                    </div>
+                </div>
+
+                <style>
+                    @keyframes morph-shape {
+                        0% { border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; }
+                        100% { border-radius: 60% 40% 40% 60% / 60% 60% 40% 40%; }
+                    }
+                    @keyframes energy-pulse {
+                        0%, 100% { transform: scale(1); opacity: 0.3; }
+                        50% { transform: scale(1.2); opacity: 1; }
+                    }
+                </style>
+
+                <div class="side-by-side" style="display: flex; align-items: center; gap: 3rem; margin-top: 3rem; text-align: left;">
+                    <!-- Video a la izquierda -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <div style="border-radius: 20px; overflow: hidden; border: 1px solid rgba(0, 242, 255, 0.2); box-shadow: 0 0 30px rgba(0, 242, 255, 0.1); background: #000;">
+                            <video autoplay loop muted playsinline preload="auto" style="width: 100%; display: block; will-change: transform; object-fit: cover;">
+                                <source src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/Dise%C3%B1o+sin+t%C3%ADtulo_90.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                    
+                    <!-- Texto a la derecha -->
+                    <div style="flex: 1.5; min-width: 300px;">
+                        <p style="margin-bottom: 2rem; line-height: 1.8; font-size: 1.1rem;">
+                            Nikola Tesla sabía que el universo se rige por frecuencia y vibración. Mozart componía sus obras maestras en la frecuencia natural de <strong>432Hz</strong> para inducir estados de genio absoluto. Einstein accedía a sus experimentos mentales más profundos en un estado de coherencia Alpha pura. <strong>Michael Jackson utilizaba frecuencias específicas en sus rituales de manifestación para elevar su vibración y materializar su realidad hasta ser el más grande de la historia.</strong> Si las mentes más brillantes de la historia dominaron su realidad con sonido... <strong>¿Por qué tú sigues ignorando el poder de las frecuencias?</strong>
+                        </p>
+                        <p style="margin-bottom: 2rem; line-height: 1.8; font-size: 1.1rem; color: var(--text-dim);">
+                            Este es el lenguaje olvidado del universo, el mismo que permite al hombre sintonizar su vibración con las leyes de la naturaleza y atraer la realidad por pura resonancia magnética. 
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 2rem; border-radius: 20px; border-left: 4px solid var(--primary); margin-top: 3rem;">
+                    <p style="font-style: italic; color: var(--text);">
+                        "Al usar nuestras Frecuencias de Sincronización Prohibidas, obligamos a tus dos lóbulos cerebrales a trabajar en perfecta armonía. Esto fulmina el autosabotaje en solo minutos. Pasas de un estado de estrés crónico y saturación mental, a un nivel superior de enfoque, regeneración y claridad absoluta. Es la activación del código mental que el sistema intentó borrar de la historia."
+                    </p>
+                </div>
+
+                <style>
+                    @media (max-width: 768px) {
+                        .side-by-side {
+                            flex-direction: column !important;
+                            gap: 2rem !important;
+                        }
+                    }
+                </style>
+            </div>
+        </section>
+        </section>
+
+        <section class="container value-stack" style="padding: 6rem 0; border-top: 1px solid var(--border);">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: clamp(2rem, 6vw, 3rem);">TU ARSENAL DE <span style="color: var(--primary);">SOBERANÍA</span></h2>
+                <p style="color: var(--text-dim);">Al unirte hoy, no recibes audios sin sentido como los que abundan en internet. Obtienes el <strong>ecosistema completo y guiado</strong> de NeuroSync, diseñado con precisión para que dejes de experimentar y empieces a conseguir resultados reales en tu vida.</p>
+            </div>
+
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎓</div>
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;">ACADEMIA NEUROSYNC</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">Acceso vitalicio a nuestra plataforma de formación donde aprenderás a dominar tu mente, tu biología y tu realidad.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎧</div>
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;">BIBLIOTECA DE FRECUENCIAS</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">Todo el catálogo de frecuencias maestras (Alfa, Theta, Gamma) para cada estado mental que necesites.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;">COMUNIDAD PRIVADA</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">Conecta con otros soberanos que ya están fuera del sistema. El entorno es el 90% de tu éxito.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🔄</div>
+                    <h4 style="color: var(--primary); margin-bottom: 1rem;">UPDATES DE POR VIDA</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">Recibe todas las actualizaciones de NeuroSync que publiquemos en un futuro.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="oferta" class="container cta-section" style="padding-bottom: 10rem;">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: clamp(2rem, 6vw, 3.5rem); margin-bottom: 1.5rem;">ELIGE TU NIVEL DE <span style="color: var(--primary);">ACCESO</span></h2>
+                
+                <!-- Barra de Escasez -->
+                <div style="max-width: 500px; margin: 0 auto 2rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; color: var(--accent);">
+                        <span>ÚLTIMOS CUPOS DISPONIBLES</span>
+                        <span>95% COMPLETADO</span>
+                    </div>
+                    <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+                        <div id="scarcityBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 10px; box-shadow: 0 0 15px var(--primary);"></div>
+                    </div>
+                </div>
+
+                <style>
+                    .animate-load-bar {
+                        animation: loadBar 2s forwards ease-out;
+                    }
+                    @keyframes loadBar {
+                        from { width: 0%; }
+                        to { width: 95%; }
+                    }
+                </style>
+
+                <div id="timer" style="font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800; color: var(--accent); letter-spacing: 4px;">
+                    15:00
+                </div>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Opción Estándar -->
+                <div class="pricing-card reveal" style="border-color: var(--primary);">
+                    <div class="pricing-header">
+                        <h3>NEUROSYNC</h3>
+                        <div class="price">$19.99</div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✅ Academia Cuántica</li>
+                        <li>✅ Frecuencias Binaurales</li>
+                        <li>✅ Reproductor de Frecuencias 1.0 (Todas las Frecuencias Solfeggio 432, 528, 852, 888 y nueve frecuencias más)</li>
+                        <li>✅ Red Social (Interacción con otros usuarios)</li>
+                        <li>✅ Acceso Vitalicio</li>
+                    </ul>
+                    <a href="https://pay.hotmart.com/U104728533E?off=bylgny9k&checkoutMode=10" class="btn" style="width: 100%; text-align: center;">SÍ, QUIERO TRANSFORMAR MI VIDA</a>
+                </div>
+
+                <!-- Opción Élite -->
+                <div class="pricing-card reveal featured" style="border-color: #fbbf24;">
+                    <div class="pricing-header">
+                        <span style="background: #fbbf24; color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; margin-bottom: 1rem; display: inline-block;">OPCIÓN FUNDADOR</span>
+                        <h3 style="color: #fbbf24;">NEUROSYNC PRO</h3>
+                        <div class="price">$99.99</div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✅ <strong>Todo NeuroSync COMPLETO</strong></li>
+                        <li>✅ <strong>Llamadas con el Creador de NeuroSync</strong></li>
+                        <li>✅ Decisión de nuevas herramientas</li>
+                        <li>✅ Acceso a link de afiliado (Genera Ingresos con Neurosync)</li>
+                        <li>✅ Insignia de Corona (Usuario VIP)</li>
+                        <li>✅ Asistente de IA CASSIE (Full)</li>
+                        <li>✅ Sistema de Rangos y Leaderboard</li>
+                        <li>✅ Protocolos de Barrido Avanzado</li>
+                        <li>✅ Audios de Naturaleza Fractal</li>
+                        <li>✅ Creación de Frecuencias (4 Tonos) - Uso Avanzado</li>
+                        <li>✅ Guías de Manifestación Cuántica</li>
+                        <li>✅ Acceso anticipado a nuevas actualizaciones</li>
+                        <li>✅ Comunidad Privada VIP</li>
+                    </ul>
+                    <a href="https://pay.hotmart.com/U104728533E?off=8o90lkno&checkoutMode=10" class="btn" style="width: 100%; text-align: center; background: #fbbf24; color: #000;">CONVERTIRME EN FUNDADOR</a>
+                </div>
+            </div>
+        </section>
+
+        <style>
+            .pricing-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 2rem;
+                max-width: 900px;
+                margin: 0 auto;
+            }
+            .pricing-card {
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                padding: 3rem 2rem;
+                border-radius: 30px;
+                display: flex;
+                flex-direction: column;
+                transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .pricing-card.reveal {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            .pricing-card.reveal.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .pricing-header h3 { font-size: 1.5rem; margin-bottom: 1rem; }
+            .price { font-size: 3.5rem; font-weight: 800; margin-bottom: 2rem; font-family: 'Outfit', sans-serif; }
+            .pricing-features { list-style: none; margin-bottom: 3rem; flex: 1; text-align: left; }
+            .pricing-features li { margin-bottom: 1rem; font-size: 0.95rem; opacity: 0.8; }
+            .featured { transform: scale(1.05); box-shadow: 0 0 50px rgba(251, 191, 36, 0.1); }
+        </style>
+    </main>
+
+        <section class="container faq-section" style="padding: 6rem 0; border-top: 1px solid var(--border);">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: 2.5rem;">PREGUNTAS DE <span style="color: var(--primary);">SOBERANÍA</span></h2>
+                <p style="color: var(--text-dim);">Despeja tus dudas y toma el control.</p>
+            </div>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <style>
+                    details {
+                        background: var(--card-bg);
+                        border: 1px solid var(--border);
+                        border-radius: 15px;
+                        margin-bottom: 1rem;
+                        overflow: hidden;
+                        transition: all 0.3s ease;
+                    }
+                    details[open] {
+                        border-color: var(--primary);
+                        background: rgba(0, 242, 255, 0.05);
+                    }
+                    summary {
+                        padding: 1.5rem 2rem;
+                        font-family: 'Outfit', sans-serif;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        cursor: pointer;
+                        list-style: none;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        color: var(--primary);
+                        letter-spacing: 1px;
+                    }
+                    summary::-webkit-details-marker { display: none; }
+                    summary::after {
+                        content: '+';
+                        font-size: 1.5rem;
+                        transition: transform 0.3s ease;
+                    }
+                    details[open] summary::after {
+                        content: '×';
+                        transform: rotate(90deg);
+                    }
+                    .faq-content {
+                        padding: 0 2rem 2rem;
+                        color: var(--text-dim);
+                        line-height: 1.8;
+                    }
+                </style>
+
+                <details>
+                    <summary>¿Qué incluye exactamente el producto?</summary>
+                    <div class="faq-content">
+                        Obtienes el ecosistema completo de soberanía: 
+                        <ul style="margin-top: 1rem; margin-left: 1.5rem;">
+                            <li><strong>Academia NeuroSync:</strong> Tu centro de entrenamiento mental.</li>
+                            <li><strong>Biblioteca de Frecuencias:</strong> Todo el arsenal de audios maestros.</li>
+                            <li><strong>Comunidad Privada:</strong> Acceso a nuestro grupo exclusivo de soberanos.</li>
+                            <li><strong>Protocolo Maestro:</strong> El reseteo de 15 minutos que hackea la Matrix.</li>
+                            <li><strong>Actualizaciones:</strong> Todo el contenido futuro sin pagar un centavo más.</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>¿Cómo funciona la garantía de satisfacción?</summary>
+                    <div class="faq-content">
+                        Es simple: o sientes la claridad mental y el reset biológico en tus primeros días, o no queremos tu dinero. Si no estás 100% satisfecho con tu transformación, contacta a soporte y procesaremos tu devolución sin preguntas incómodas.
+                    </div>
+                </details>
+
+                <details>
+                    <summary>¿Es seguro usar estas frecuencias a diario?</summary>
+                    <div class="faq-content">
+                        Sí, de hecho es lo recomendado. El sistema está diseñado para ser un "entrenamiento" para tu sistema nervioso. Al igual que el ejercicio físico, el efecto es acumulativo y fortalece tu capacidad de enfoque y resiliencia al estrés con cada uso.
+                    </div>
+                </details>
+
+
+
+                <details>
+                    <summary>¿Cuándo recibiré mi acceso?</summary>
+                    <div class="faq-content">
+                        De forma inmediata. Al completar tu pago a través de la plataforma segura de Hotmart, recibirás un correo con tus credenciales de acceso para que puedas empezar tu primera sesión al instante.
+                    </div>
+        </section>
+ 
+        <section class="container social-proof" style="padding: 6rem 0; border-top: 1px solid var(--border); text-align: center;">
+            <div style="max-width: 850px; margin: 0 auto;">
+                <h2 style="font-size: clamp(2rem, 6vw, 3.5rem); margin-bottom: 1.5rem;">CIENTOS DE VIDAS <span style="color: var(--primary);">SINCRONIZADAS</span></h2>
+                <p style="color: var(--text-dim); font-size: 1.2rem; line-height: 1.8; margin-bottom: 3rem;">
+                    Únete a la comunidad que está rediseñando lo que es posible. Ya somos <strong>más de 780 personas en 31 países diferentes</strong> en todo el mundo que hemos hackeado nuestra realidad en todas las áreas: mente, cuerpo, espíritu y finanzas.
+                </p>
+                
+                <button id="openTestimonials" class="btn" style="background: var(--primary); color: #000; box-shadow: 0 0 30px rgba(0, 242, 255, 0.3); border: none; padding: 1.5rem 4rem; font-size: 1.3rem; cursor: pointer;">VER CASOS DE ÉXITO REALES</button>
+                
+                <div style="margin-top: 3rem; display: flex; justify-content: center; gap: 4rem; opacity: 0.6; flex-wrap: wrap;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">780+</div>
+                        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">Soberanos</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">31</div>
+                        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">Países</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">100%</div>
+                        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;">Soberanía</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal de Testimonios -->
+        <div id="testimonialModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 2rem;">
+            <div style="background: var(--bg); border: 1px solid var(--border); width: 100%; max-width: 900px; max-height: 90vh; border-radius: 40px; position: relative; padding: 4rem 2rem; overflow-y: auto; box-shadow: 0 0 100px rgba(0, 242, 255, 0.1);">
+                <!-- Botón Cerrar -->
+                <button id="closeTestimonials" style="position: absolute; top: 2rem; right: 2rem; background: none; border: none; color: var(--text-dim); font-size: 2rem; cursor: pointer; transition: color 0.3s ease;">×</button>
+                
+                <div style="text-align: center; margin-bottom: 3rem;">
+                    <h2 style="color: var(--primary); margin-bottom: 1rem;">EVIDENCIA DE SOBERANÍA</h2>
+                    <p style="color: var(--text-dim);">Resultados reales de personas que ya hackearon la Matrix.</p>
+                </div>
+
+                <!-- Contenedor de Testimonios -->
+                <div id="testimonialsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    
+                    <!-- Testimonio 1: Mateo -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative; transition: transform 0.3s ease;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">SALUD MENTAL</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/ansiedad+.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Mateo Torres</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">España, 20 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"Sinceramente, no creía en esto. Tenía ataques de pánico antes de cada examen y no podía ni dormir de la angustia. Empecé con el audio de 15 minutos y por primera vez en años sentí un silencio real en mi cabeza. Es otra vida."</p>
+                    </div>
+
+                    <!-- Testimonio 2: Valentina -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">NEGOCIOS</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/colombiana+negocio+de+u%C3%B1as.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Valentina Rojas</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">Colombia, 23 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"Mi negocio de uñas estaba estancado. Empecé a usar las frecuencias de abundancia y en un mes duplicamos las clientas. Mi energía cambió y mi negocio también."</p>
+                    </div>
+
+                    <!-- Testimonio 3: Roberto -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">ABUNDANCIA</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/due%C3%B1o+de+tienda+de+abarrotes.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Roberto Méndez</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">México, 48 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"El estrés de la tienda me estaba matando. NeuroSync me devolvió la paz. Ahora manejo todo con calma y las ventas han subido porque mi trato es otro."</p>
+                    </div>
+
+                    <!-- Testimonio 4: Alejandro -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">LIDERAZGO</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/empresario.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Alejandro Silva</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">Chile, 40 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"Llevaba meses quemado, tomando decisiones por puro estrés y perdiendo dinero. NeuroSync me enseñó a bajar el ruido en minutos. Mi nivel de enfoque ahora es absurdo; lo que antes me tomaba un día lo resuelvo en 2 horas."</p>
+                    </div>
+
+                    <!-- Testimonio 5: Gabriel -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">ESPIRITUALIDAD</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/guia+espiritual.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Gabriel Luna</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">Costa Rica, 30 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"He meditado por años, pero estas frecuencias son un atajo cuántico. Siento una conexión espiritual que antes me tomaba horas alcanzar. Ahora se las recomiendo a todos mis alumnos para que su despertar sea mucho más fluido."</p>
+                    </div>
+
+                    <!-- Testimonio 6: Camila -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">PROPÓSITO</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/joven+argentina.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Camila Bianchi</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">Argentina, 25 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"Estaba en un pozo, sin saber para dónde ir y con un ruido en mi cabeza insoportable. Las frecuencias me ayudaron a limpiar esa niebla mental. Hoy tengo mi propio proyecto y una paz que no cambio por nada."</p>
+                    </div>
+
+                    <!-- Testimonio 7: Francisco -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">VITALIDAD</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/se%C3%B1or+espa%C3%B1a.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Paco Jiménez</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">España, 58 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"A mi edad pensaba que el cansancio era ley. Con NeuroSync mi vitalidad ha vuelto. Me siento con la claridad mental que tenía a los 30 años."</p>
+                    </div>
+
+                    <!-- Testimonio 8: Elena -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">SABIDURÍA</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/se%C3%B1ora+mexico.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Elena García</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">México, 62 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"La armonía en mi hogar ha mejorado muchísimo. Sintonizar mi frecuencia me ha dado la sabiduría para guiar a mi familia desde la paz profunda."</p>
+                    </div>
+
+                    <!-- Testimonio 9: Beatriz -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--border); padding: 1.5rem; border-radius: 24px; position: relative;">
+                        <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(0, 242, 255, 0.1); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; border: 1px solid var(--primary);">SOBERANÍA</div>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <img src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/TESTIMONIOS/se%C3%B1ora+portugal.jpg" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                            <div style="text-align: left;">
+                                <h4 style="font-size: 0.9rem; margin-bottom: 0.2rem;">Beatriz Sousa</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-dim);">Portugal, 37 años</p>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; text-align: left;">"El ambiente en mi oficina me consumía la energía, llegaba a casa vacía. Con NeuroSync aprendí a blindar mi vibración. El caos sigue ahí, pero a mí ya no me toca. Recuperé el mando de mis emociones."</p>
+                    </div>
+
+                </div>
+
+                <!-- Botón de Acción Final en el Modal -->
+                <div style="margin-top: 4rem; text-align: center;">
+                    <a href="https://pay.hotmart.com/U104728533E?off=bylgny9k&checkoutMode=10" class="btn" style="background: var(--primary); color: #000; box-shadow: 0 0 30px rgba(0, 242, 255, 0.4); border: none; padding: 1.5rem 4rem; font-size: 1.5rem; text-decoration: none; display: inline-block; border-radius: 50px; font-weight: 800;">QUIERO TRANSFORMAR MI VIDA AHORA</a>
+                    <p style="margin-top: 1.5rem; color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;">Acceso instantáneo al ecosistema completo</p>
+                </div>
+            </div>
+        </div>
+
+
+    <footer style="padding: 4rem 0; text-align: center; color: var(--text-dim); border-top: 1px solid var(--border);">
+        <div class="container">
+            <p>&copy; 2026 NEUROSYNC ACADEMIA. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Contador regresivo simple
+        let time = 15 * 60; // 15 minutos en segundos
+        const timerElement = document.getElementById('timer');
+
+        function updateTimer() {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            if (timerElement) {
+                timerElement.innerHTML = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            if (time > 0) time--;
+        }
+
+        setInterval(updateTimer, 1000);
+
+        // Scroll Reveal Animation (Intersection Observer)
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Lógica del Modal de Testimonios
+        const modal = document.getElementById('testimonialModal');
+        const openBtn = document.getElementById('openTestimonials');
+        const closeBtn = document.getElementById('closeTestimonials');
+        const warningBanner = document.getElementById('warningBanner');
+
+        if (openBtn && modal && closeBtn) {
+            openBtn.onclick = () => {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // Bloquear scroll
+                if (warningBanner) warningBanner.style.display = 'none';
+            }
+
+            closeBtn.onclick = () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restaurar scroll
+                if (warningBanner) warningBanner.style.display = 'block';
+            }
+
+            window.onclick = (event) => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    if (warningBanner) warningBanner.style.display = 'block';
+                }
+            }
+        }
+
+        // Observer para la barra de escasez
+        const scarcityBar = document.getElementById('scarcityBar');
+        if (scarcityBar) {
+            const barObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        scarcityBar.classList.add('animate-load-bar');
+                        barObserver.unobserve(entry.target); // Solo animar una vez
+                    }
+                });
+            }, { threshold: 0.5 });
+            barObserver.observe(scarcityBar);
+        }
+    </script>
+</body>
+</html>

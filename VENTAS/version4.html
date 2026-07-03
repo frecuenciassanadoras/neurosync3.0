@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroSync™ | Presentación Exclusiva</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --color-bg: #050505;
+            --color-accent: #38bdf8;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: white;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .vsl-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .vsl-headline {
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 40px;
+            background: linear-gradient(to right, #fff, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.1);
+            aspect-ratio: 16/9;
+        }
+
+        video { width: 100%; height: 100%; display: block; }
+
+        /* --- UNMUTE OVERLAY --- */
+        .unmute-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+            flex-direction: column; cursor: pointer; z-index: 50; transition: 0.3s;
+        }
+        .unmute-overlay:hover { background: rgba(0,0,0,0.4); }
+        .unmute-icon { font-size: 4rem; color: white; margin-bottom: 15px; animation: pulse 1.5s infinite; }
+        .unmute-text { font-size: 1.2rem; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 1px; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .cta-container {
+            margin-top: 50px;
+            display: none; /* Se mostrará al terminar el video */
+            animation: slideUp 0.8s ease forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-vsl {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 25px 60px;
+            border-radius: 100px;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 900;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-vsl:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.6);
+        }
+
+        .trust-badges {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+
+        /* --- LOADING BAR --- */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 10px;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--color-accent);
+            transition: 0.1s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vsl-container">
+        <!-- TÍTULO DE IMPACTO -->
+        <h1 class="vsl-headline uppercase">
+            Descubre el Secreto de la Sincronización Cuántica y Reprograma tu Realidad Hoy
+        </h1>
+
+        <!-- REPRODUCTOR VSL -->
+        <div class="video-wrapper">
+            <!-- OVERLAY PARA ACTIVAR SONIDO -->
+            <div id="unmuteOverlay" class="unmute-overlay" onclick="enableSound()">
+                <i class="fas fa-volume-up unmute-icon"></i>
+                <span class="unmute-text">Haz clic para activar el sonido</span>
+            </div>
+
+            <video id="vslVideo" autoplay muted playsinline controlsList="nodownload" oncontextmenu="return false;">
+                <source src="https://f005.backblazeb2.com/file/BACKUP-DE-IMAGENES/ESPIRITUALIDAD/NEUROSYNC2.0/PAGINA+DE+VENTAS+NUEVA/version+subtitulada.mp4" type="video/mp4">
+                Tu navegador no soporta videos.
+            </video>
+        </div>
+        <div class="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <p class="text-gray-500 mt-4 text-sm font-semibold italic">Asegúrate de tener el volumen encendido 🔊</p>
+
+        <!-- BOTÓN DE COMPRA REVELADO -->
+        <div id="cta-vsl" class="cta-container">
+            <a href="https://pay.hotmart.com/U104728533E?off=bylgny9k&checkoutMode=10" class="btn-vsl">
+                RECLAMA TU ACCESO VITALICIO Y REPROGRAMA TU REALIDAD
+            </a>
+            
+            <div class="trust-badges">
+                <span><i class="fas fa-shield-alt text-green-500"></i> Compra Segura</span>
+                <span><i class="fas fa-undo text-sky-400"></i> Garantía 7 Días</span>
+                <span><i class="fas fa-lock text-yellow-500"></i> Acceso Vitalicio</span>
+            </div>
+            
+            <div class="mt-8 flex justify-center gap-6 opacity-40 text-3xl">
+                <i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fab fa-cc-paypal"></i><i class="fab fa-apple-pay"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('vslVideo');
+        const cta = document.getElementById('cta-vsl');
+        const progressBar = document.getElementById('progress-bar');
+        const unmuteOverlay = document.getElementById('unmuteOverlay');
+
+        // Función para activar sonido
+        function enableSound() {
+            video.muted = false;
+            video.currentTime = 0; // Reiniciamos el video para que lo escuchen desde el inicio
+            unmuteOverlay.style.opacity = '0';
+            setTimeout(() => unmuteOverlay.style.display = 'none', 300);
+        }
+
+        // Actualizar barra de progreso visual
+        video.addEventListener('timeupdate', () => {
+            const percentage = (video.currentTime / video.duration) * 100;
+            progressBar.style.width = percentage + '%';
+        });
+
+        // Revelar botón al terminar el video
+        video.onended = function() {
+            cta.style.display = 'block';
+            // Scroll suave hacia el botón para máxima conversión
+            cta.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        // TIKTOK/SOCIAL BROWSER REDIRECT BYPASS V2 (iOS + Android)
+        (function() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            var isSocial = /TikTok|Instagram|FBAN|FBAV/i.test(ua);
+            
+            if (isSocial) {
+                var links = document.querySelectorAll('a[href*="hotmart.com"]');
+                links.forEach(function(link) {
+                    var originalUrl = link.href;
+                    link.href = '/.netlify/functions/checkout?url=' + encodeURIComponent(originalUrl);
+                    
+                    link.addEventListener('click', function(e) {
+                        if (/Android/i.test(ua)) {
+                            e.preventDefault();
+                            var cleanUrl = originalUrl.replace(/^https?:\/\//, '');
+                            window.location.href = 'intent://' + cleanUrl + '#Intent;scheme=https;package=com.android.chrome;end';
+                        } 
+                        else if (/iPhone|iPad|iPod/i.test(ua)) {
+                            document.getElementById('social-bridge').style.display = 'block';
+                        }
+                    });
+                });
+            }
+        })();
+    </script>
+    <!-- SOCIAL BROWSER BRIDGE UI -->
+    <style>
+        #social-bridge {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 10000; color: white;
+            padding: 60px 20px; text-align: center; font-family: 'Outfit', sans-serif;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
+        .bridge-content { max-width: 400px; margin: 0 auto; }
+        .bridge-icon { font-size: 4rem; color: #38bdf8; margin-bottom: 25px; animation: pulse 2s infinite; }
+        .bridge-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 15px; color: #fff; letter-spacing: -1px; }
+        .bridge-text { font-size: 1.1rem; color: #94a3b8; margin-bottom: 35px; line-height: 1.6; }
+        .bridge-steps { background: rgba(56, 189, 248, 0.05); padding: 30px; border-radius: 35px; text-align: left; margin-bottom: 40px; border: 1px solid rgba(56, 189, 248, 0.2); }
+        .step-item { display: flex; align-items: center; gap: 18px; margin-bottom: 25px; }
+        .step-num { min-width: 32px; height: 32px; background: #38bdf8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; color: #000; }
+        .bridge-btn { background: #38bdf8; color: #000; padding: 22px 40px; border-radius: 100px; font-weight: 900; display: inline-block; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; width: 100%; box-shadow: 0 10px 30px rgba(56, 189, 248, 0.3); }
+        @keyframes pulse { 0% { opacity: 0.6; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1); } 100% { opacity: 0.6; transform: scale(0.95); } }
+    </style>
+    <div id="social-bridge">
+        <div class="bridge-content">
+            <div class="bridge-icon"><i class="fas fa-external-link-alt"></i></div>
+            <h2 class="bridge-title">¡PASO OBLIGATORIO!</h2>
+            <p class="bridge-text">TikTok bloquea el acceso seguro a pagos. Sigue estos pasos:</p>
+            <div class="bridge-steps">
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <p>Toca los <strong>3 puntos (...)</strong> arriba a la derecha.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <p>Selecciona <strong>"Abrir en el navegador"</strong>.</p>
+                </div>
+            </div>
+            <a href="#" onclick="document.getElementById('social-bridge').style.display='none'" class="bridge-btn">ENTENDIDO</a>
+        </div>
+    </div>
+</body>
+</html>

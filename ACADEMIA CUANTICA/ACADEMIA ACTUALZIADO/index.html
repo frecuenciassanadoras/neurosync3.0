@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Cuántica - NeuroSync</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Orbitron:wght@500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SUPABASE CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --bg-overlay: rgba(5, 5, 15, 0.9); --panel-bg: rgba(20, 25, 35, 0.65); --card-bg: rgba(15, 20, 30, 0.7);
+            --text-main: #ffffff; --text-muted: #94a3b8; --border-color: rgba(255, 255, 255, 0.1);
+            --accent: #8b5cf6; --accent-hover: #a64bf4; --success: #10b981; --error: #ef4444;
+            --shadow-glass: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        body {
+            font-family: 'Poppins', sans-serif; background-image: url('https://res.cloudinary.com/df3hfnqhm/image/upload/v1752532743/Dise%C3%B1o_sin_t%C3%ADtulo_-_2025-07-14T170654.732_mhr13k.png');
+            background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+            color: var(--text-main); min-height: 100vh; position: relative;
+        }
+        body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-overlay); z-index: -1; }
+        .layout-container { max-width: 1500px; margin: 0 auto; padding: 2rem; display: flex; gap: 2rem; height: 100vh; overflow: hidden; }
+        .sidebar { width: 380px; background: var(--panel-bg); backdrop-filter: blur(15px); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; display: flex; flex-direction: column; box-shadow: var(--shadow-glass); flex-shrink: 0; }
+        .sidebar-header { margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); text-align: center; }
+        .sidebar-header h1 { font-family: 'Orbitron', sans-serif; font-size: 1.4rem; letter-spacing: 2px; color: var(--text-main); }
+        .sidebar-header h1 span { color: #00d4ff; }
+        .module-list-container { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        .module-list-container::-webkit-scrollbar { width: 6px; }
+        .module-list-container::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        .module-list { list-style: none; padding: 0; margin: 0; }
+        .module-list li { padding: 1rem 1.2rem; margin-bottom: 0.5rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; color: var(--text-muted); transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; background: rgba(255,255,255,0.02); }
+        .module-list li.lesson::before { content: "\f144"; font-family: "Font Awesome 6 Free"; font-weight: 900; opacity: 0.6; font-size: 1.2rem;}
+        .module-list li.quiz-item::before { content: "\f059"; font-family: "Font Awesome 6 Free"; font-weight: 900; opacity: 0.8; color: #fbbf24; font-size: 1.2rem;}
+        .module-list li:hover:not(.locked) { background: rgba(255,255,255,0.05); color: var(--text-main); transform: translateX(5px); }
+        .module-list li.active { background: rgba(139, 92, 246, 0.15); border: 1px solid var(--accent); color: var(--text-main); font-weight: 600; }
+        .module-list li.active::before { opacity: 1; color: #00d4ff; }
+        .module-list li.locked { opacity: 0.3; cursor: not-allowed; background: transparent; }
+        .module-list li.locked::before { content: "\f023"; color: #ef4444; }
+        .action-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; font-weight: 700; text-decoration: none; border-radius: 12px; transition: all 0.3s ease; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; margin-top: 0.75rem; cursor: pointer; }
+        .btn-reset { border: 1px solid rgba(148, 163, 184, 0.3); color: var(--text-muted); background: rgba(255, 255, 255, 0.02); }
+        .btn-reset:hover { background: rgba(255, 255, 255, 0.08); color: white; border-color: white; }
+        .btn-logout { border: 2px solid rgba(248, 113, 113, 0.2); color: #f87171; background: rgba(248, 113, 113, 0.05); }
+        .btn-logout:hover { background: #f87171; color: #fff; border-color: #f87171; box-shadow: 0 10px 20px rgba(248, 113, 113, 0.2); }
+        .content-area { flex-grow: 1; background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border-color); border-radius: 20px; padding: 4rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.3); overflow-y: auto; scroll-behavior: smooth; }
+        .content-area::-webkit-scrollbar { width: 8px; }
+        .content-area::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        .module-section { display: none; animation: fadeIn 0.5s ease; max-width: 900px; margin: 0 auto; }
+        .module-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .content-area h1 { font-family: 'Orbitron', sans-serif; font-size: 2.8rem; color: #00d4ff; margin-bottom: 2rem; line-height: 1.2; text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);}
+        .content-area h2 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: var(--accent-hover); margin-top: 3.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;}
+        .content-area h3 { font-size: 1.4rem; color: #fbbf24; margin-top: 2.5rem; margin-bottom: 1rem; }
+        .content-area p { color: #cbd5e1; line-height: 2; margin-bottom: 1.8rem; font-size: 1.1rem; text-align: justify; }
+        .content-area ul { color: #cbd5e1; margin-bottom: 2rem; padding-left: 1.5rem; font-size: 1.1rem; list-style-type: disc;}
+        .content-area li { margin-bottom: 1rem; line-height: 1.8; }
+        .content-area strong { color: white; font-weight: 600; }
+        .content-area img { width: 100%; height: auto; max-height: 450px; object-fit: cover; border-radius: 15px; margin: 2.5rem 0; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);}
+        .img-caption { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: -1.5rem; margin-bottom: 3rem; font-style: italic; }
+        .info-box { background: rgba(0, 212, 255, 0.05); border-left: 4px solid #00d4ff; padding: 2rem; border-radius: 0 15px 15px 0; margin: 3rem 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
+        .quote-box { font-size: 1.3rem; font-style: italic; text-align: center; padding: 3rem; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin: 3rem 0; color: #e2e8f0; }
+        .quiz-container { background: rgba(20, 20, 35, 0.9); border: 1px solid var(--border-color); padding: 3rem; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);}
+        .question-block { margin-bottom: 3rem; background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);}
+        .question-text { font-size: 1.25rem; font-weight: 600; color: white; margin-bottom: 1.5rem; line-height: 1.6;}
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: flex-start; gap: 15px; font-size: 1.05rem; color: #cbd5e1;}
+        .option-item:hover { background: rgba(139, 92, 246, 0.1); border-color: var(--accent); color: white;}
+        .option-item input[type="radio"] { accent-color: var(--accent); transform: scale(1.4); margin-top: 5px; cursor: pointer;}
+        .btn-submit-quiz { background: linear-gradient(45deg, #00d4ff, #8b5cf6); color: white; font-weight: 800; border: none; padding: 20px; border-radius: 15px; cursor: pointer; font-size: 1.2rem; width: 100%; margin-top: 2rem; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px;}
+        .btn-submit-quiz:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); filter: brightness(1.1);}
+        .quiz-result { text-align: center; padding: 3rem; border-radius: 15px; margin-top: 2rem; display: none; animation: fadeIn 0.5s;}
+        .result-pass { background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); color: var(--success); }
+        .result-fail { background: rgba(239, 68, 68, 0.1); border: 2px solid var(--error); color: var(--error); }
+    </style>
+</head>
+<body>
+    <div class="layout-container">
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header"><h1>ACADEMIA <span>CUÁNTICA</span></h1></div>
+            <div class="module-list-container">
+                <ul class="module-list" id="main-nav">
+                    <li class="lesson active" data-target="mod1" data-level="1">Módulo 1: Física del Despertar</li><li class="quiz-item" data-target="quiz1" data-level="1">Examen Nivel 1</li>
+                    <li class="lesson locked" data-target="mod2" data-level="2">Módulo 2: Anatomía y Toroide</li><li class="quiz-item locked" data-target="quiz2" data-level="2">Examen Nivel 2</li>
+                    <li class="lesson locked" data-target="mod3" data-level="3">Módulo 3: Higiene Energética</li><li class="quiz-item locked" data-target="quiz3" data-level="3">Examen Nivel 3</li>
+                    <li class="lesson locked" data-target="mod4" data-level="4">Módulo 4: Cimática y Ondas</li><li class="quiz-item locked" data-target="quiz4" data-level="4">Examen Nivel 4</li>
+                    <li class="lesson locked" data-target="mod5" data-level="5">Módulo 5: Los 7 Vórtices</li><li class="quiz-item locked" data-target="quiz5" data-level="5">Examen Nivel 5</li>
+                    <li class="lesson locked" data-target="mod6" data-level="6">Módulo 6: Neuroplasticidad</li><li class="quiz-item locked" data-target="quiz6" data-level="6">Examen Nivel 6</li>
+                    <li class="lesson locked" data-target="mod7" data-level="7">Módulo 7: Códigos Sagrados</li><li class="quiz-item locked" data-target="quiz7" data-level="7">Examen Nivel 7</li>
+                    <li class="lesson locked" data-target="mod8" data-level="8">Módulo 8: Epigenética y ADN</li><li class="quiz-item locked" data-target="quiz8" data-level="8">Examen Nivel 8</li>
+                    <li class="lesson locked" data-target="mod9" data-level="9">Módulo 9: Lazos Kármicos</li><li class="quiz-item locked" data-target="quiz9" data-level="9">Examen Nivel 9</li>
+                    <li class="lesson locked" data-target="mod10" data-level="10">Módulo 10: Salto Cuántico</li><li class="quiz-item locked" data-target="quiz10" data-level="10">Examen Final</li>
+                </ul>
+            </div>
+            <button class="action-btn btn-reset" onclick="resetProgress()"><i class="fas fa-undo"></i> Resetear Progreso</button>
+            <a href="https://reproductor-frecuencias.netlify.app/panel" class="action-btn btn-logout"><i class="fas fa-sign-out-alt"></i> Salir al Menú</a>
+        </div>
+<div class="content-area" id="main-content-scroll">
+            <div id="welcome" class="module-section active" style="text-align: center; margin-top: 10%;">
+                <i class="fas fa-atom" style="font-size: 5rem; color: #00d4ff; margin-bottom: 2rem; animation: spin 10s linear infinite;"></i>
+                <h1 style="font-size: 3rem; color: white;">Academia Cuántica <br>Nivel Experto</h1>
+                <p style="color: var(--text-muted); font-size: 1.3rem; max-width: 700px; margin: 0 auto; line-height: 1.8;">Bienvenido al entrenamiento más profundo sobre la manipulación de la realidad. Este no es un taller motivacional; es un estudio riguroso de la física de la conciencia. <br><br>Para avanzar, debes aprobar cada examen con un mínimo del <strong>80% (8/10)</strong>. Ve al Módulo 1 en el menú izquierdo para iniciar.</p>
+            </div>
+
+            <div id="mod1" class="module-section">
+                <h1>Módulo 1: La Física del Despertar y la Deconstrucción del Ego</h1>
+                <img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Cosmos">
+                <div class="img-caption">Gráfico 1.1: El entramado del Campo Cuántico.</div>
+                <p>A diferencia de lo que enseñan las corrientes "New Age" superficiales, el despertar espiritual rara vez comienza con luz, arcoíris y positividad constante. Todo gran salto evolutivo en la conciencia humana comienza con una ruptura. Una ruptura de la ilusión de la materia. A este punto de inflexión, el psiquiatra suizo Carl Jung lo llamó "El encuentro con la Sombra", mientras que la literatura mística lo documenta como <strong>"La Noche Oscura del Alma"</strong>. Si estás leyendo esto, es probable que tu antigua identidad esté colapsando. Este colapso es neurobiológicamente necesario para dejar espacio a la construcción de una nueva red neuronal.</p>
+                <div class="quote-box">"No te iluminas imaginando figuras de luz, sino haciendo consciente la oscuridad." <br><span style="font-size: 1rem; color: #00d4ff; font-weight: bold; font-style: normal;">— Carl Jung</span></div>
+                <h2>1. La Ciencia detrás del Velo (Física Cuántica)</h2>
+                <p>Para entender tu despertar y cómo NeuroSync altera tu realidad, primero debemos destruir la percepción que tienes del mundo físico. La física newtoniana nos hizo creer que éramos materia sólida moviéndose en un espacio vacío. La mecánica cuántica ha demostrado que esto es una ilusión perceptual del cerebro humano.</p>
+                <div class="info-box">
+                    <h3 style="color: #00d4ff; margin-top:0;"><i class="fas fa-microscope"></i> El Experimento de la Doble Rendija y el Efecto Observador</h3>
+                    <p>En el experimento de la doble rendija, los físicos dispararon electrones individuales hacia una pared. Descubrieron algo aterrador: cuando los electrones <strong>no eran observados</strong>, se comportaban como una "onda de probabilidad infinita" pasando por ambas ranuras a la vez. Pero en el instante en que se colocaba un detector para <strong>observar</strong>, la onda colapsaba instantáneamente y el electrón se comportaba como una partícula sólida. <strong>El Principio de Manifestación:</strong> El universo no existe en un estado material fijo. Es una sopa cuántica de energía que espera tu observación y expectativa para materializarse.</p>
+                </div>
+                <h2>2. Neurociencia del Ego: La Red Neuronal por Defecto (DMN)</h2>
+                <p>La DMN es un conjunto de regiones cerebrales interconectadas que se activa cuando no estás enfocado en el momento presente. Es responsable de tu diálogo interno, la culpa, el miedo, y de mantener intacta tu autobiografía (tu Ego). Cuando ocurre el Despertar, la actividad eléctrica en la DMN se reduce. Al apagarse esta red, la ilusión de separación desaparece. Sientes conexión profunda con el Todo, pero la amígdala entra en pánico porque interpreta la muerte de la identidad como muerte biológica.</p>
+                <h2>3. Sintomatología Profunda del Despertar</h2>
+                <ul>
+                    <li><strong>Desestructuración de Identidad (Desrealización):</strong> Lo que antes te definía (tu profesión, estatus) te parece un disfraz. Sentirás un vacío existencial.</li>
+                    <li><strong>Hipersensibilidad:</strong> El sistema nervioso absorbe más datos. Lugares concurridos o personas vibrando en miedo te generan rechazo físico.</li>
+                    <li><strong>Purga Celular:</strong> El cuerpo almacena traumas. Experimentarás llanto incontrolable sin motivo, temblores o zumbidos en los oídos (ajuste de presión).</li>
+                    <li><strong>Sincronicidades Matemáticas:</strong> Tu cerebro comienza a procesar el código de la realidad. Notas secuencias (11:11, 333) que la DMN solía bloquear.</li>
+                </ul>
+                <h2>4. La Trampa de la Evasión Espiritual</h2>
+                <p>El "Spiritual Bypassing" es utilizar doctrinas espirituales para evitar enfrentar heridas psicológicas. Si reprimes la tristeza para "mantener la vibración alta", estás creando disonancia cognitiva. El universo responde a la firma de tu subconsciente. La vibración más alta ante el dolor es la <strong>Aceptación Radical</strong>. Abrazar la sombra es lo único que la disuelve.</p>
+                <h2>5. Tu Herramienta de Hackeo: Frecuencias Binaurales</h2>
+                <p>Las frecuencias de NeuroSync inyectan dos tonos distintos en cada oído, obligando al tallo cerebral a procesar la diferencia matemática. Esto arrastra tu cerebro hacia el <strong>estado Theta (4-8 Hz)</strong>, apagando la DMN sin activar la amígdala, creando una ventana plástica para reprogramar el subconsciente.</p>
+            </div>
+            <div id="quiz1" class="module-section"><h1>Examen Nivel 1</h1><div class="quiz-container" id="quiz-form-1"></div></div>
+<div id="mod2" class="module-section">
+                <h1>Módulo 2: La Anatomía Oculta y el Toroide Magnético</h1>
+                <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Aura humana">
+                <div class="img-caption">Gráfico 2.1: Representación de las capas sutiles y emisión de fotones.</div>
+                <p>La medicina tradicional trata al cuerpo humano como una máquina biológica. La física cuántica y el HeartMath Institute han corroborado que el cuerpo físico es solo la capa más densa de un sistema electromagnético de cuatro niveles.</p>
+                <h2>1. Los Cuatro Cuerpos Sutiles (El Cuaternario)</h2>
+                <ul>
+                    <li><strong>El Cuerpo Físico (Holograma Denso):</strong> Es la frecuencia más lenta. Es el último eslabón de la cadena de manifestación. Ninguna enfermedad se origina en el cuerpo físico. Si aparece un dolor físico, el bloqueo atravesó los cuerpos superiores durante meses.</li>
+                    <li><strong>El Cuerpo Etérico/Emocional (Esponja Magnética):</strong> Plantilla energética donde se almacenan las emociones no procesadas. El odio o la culpa se acumulan aquí como lodo negro. Si no se limpia, gotea hacia el cuerpo físico, causando enfermedad.</li>
+                    <li><strong>El Cuerpo Mental (El Arquitecto):</strong> De naturaleza eléctrica. Almacena creencias limitantes y patrones de pensamiento. Un pensamiento eléctrico de escasez magnetiza la emoción de miedo en el cuerpo emocional.</li>
+                    <li><strong>El Cuerpo Espiritual / Causal (Disco Duro):</strong> Tu frecuencia más alta. Conecta tu identidad con el Campo Cuántico. Almacena tu propósito y la memoria del alma.</li>
+                </ul>
+                <div class="quote-box" style="border-color: #f87171; color: #fca5a5;">"La enfermedad no es el problema, es la solución biológica a un conflicto emocional no resuelto."</div>
+                <h2>2. El Toroide Magnético del Corazón</h2>
+                <p>La energía fluye en un patrón geométrico perfecto llamado Toroide (forma de manzana). El Instituto HeartMath descubrió que el campo electromagnético del <strong>corazón es 5,000 veces más fuerte que el del cerebro</strong>. La energía entra por la coronilla, baja por la columna, sale hacia la Tierra y vuelve a subir reciclándose.</p>
+                <div class="info-box" style="border-left-color: #fbbf24; background: rgba(251, 191, 36, 0.05);">
+                    <h3 style="color: #fbbf24; margin-top:0;"><i class="fas fa-exclamation-triangle"></i> Toroides Colapsados y Fugas</h3>
+                    <p>Cuando vives en estrés crónico (Beta), en miedo o juzgando, la simetría de tu toroide colapsa creando "fugas áuricas". Al tener agujeros, tu vitalidad se drena y eres susceptible de absorber la ansiedad y negatividad del entorno. Eres una aspiradora energética.</p>
+                </div>
+                <h2>3. Alineación Toroidal con NeuroSync</h2>
+                <p>Restaurar la geometría de tu toroide es vital antes de manifestar. Al usar <strong>285 Hz</strong> o <strong>432 Hz</strong>, obligas al corazón a entrar en "Coherencia Cardíaca". Esto repara las fugas y sella tu campo para que no regales tu vitalidad.</p>
+            </div>
+            <div id="quiz2" class="module-section"><h1>Examen Nivel 2</h1><div class="quiz-container" id="quiz-form-2"></div></div>
+
+            <div id="mod3" class="module-section">
+                <h1>Módulo 3: Higiene, Limpieza y Protección Energética</h1>
+                <img src="https://images.unsplash.com/photo-1507652313651-74ff74d3c8fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Limpieza y purificación">
+                <p>Te bañas todos los días para limpiar tu cuerpo físico. Sin embargo, tu cuerpo emocional transita por "basureros" energéticos constantemente. El estrés colectivo genera <strong>"Iones Positivos" (radicales libres electromagnéticos)</strong> que se adhieren a tu aura, conocidos popularmente como "mala vibra".</p>
+                <h2>1. La Ciencia del Parasitismo Astral (Vampirismo)</h2>
+                <p>Por leyes de entropía y termodinámica, la energía fluye del lugar de mayor concentración al de menor. Si vibras alto y entras en una habitación con alguien deprimido (baja energía), la física dicta que tu energía fluirá hacia él. Tú "donas" vitalidad. Esto es vampirismo energético inconsciente.</p>
+                <h2>2. Protocolos de Descarga (Grounding y Sal)</h2>
+                <ul>
+                    <li><strong>Earthing (Toma de Tierra):</strong> Caminar descalzo sobre tierra o pasto por 15 minutos permite que la acumulación estática de estrés se descargue hacia la Tierra, que actúa como un gigantesco sumidero de iones negativos sanadores.</li>
+                    <li><strong>El Reseteo Salino:</strong> El agua es conductora y la sal cristaliza y altera la polaridad. Bañarte con sal de mar desde el cuello hacia abajo resetea la polaridad electromagnética de tu piel y corta cordones etéricos.</li>
+                </ul>
+                <div class="info-box">
+                    <h3 style="color: #00d4ff; margin-top:0;"><i class="fas fa-shield-alt"></i> La Burbuja Espejo</h3>
+                    <p>Antes de ir a hospitales o centros comerciales, sella tu toroide:</p>
+                    <ol>
+                        <li>Respira en ciclo 4-4-4 (Inhala 4s, sostén 4s, exhala 4s) para apagar la amígdala.</li>
+                        <li>Visualiza una esfera de luz blanca a tu alrededor.</li>
+                        <li>Decide que la capa exterior es de titanio-espejo.</li>
+                        <li>Afirma: "Mi campo está sellado. Todo ataque rebota en este espejo y regresa a su origen."</li>
+                    </ol>
+                </div>
+                <h2>3. Asepsia Acústica con Frecuencias</h2>
+                <p>El humo de palo santo limpia el aire, pero el sonido es más rápido. Las frecuencias de <strong>417 Hz</strong> o <strong>741 Hz</strong> actúan como un bisturí sónico. Reproducirlas en altavoz hace vibrar el polvo energético atrapado, desintegrando patrones de estancamiento.</p>
+            </div>
+            <div id="quiz3" class="module-section"><h1>Examen Nivel 3</h1><div class="quiz-container" id="quiz-form-3"></div></div>
+<div id="mod4" class="module-section">
+                <h1>Módulo 4: Cimática y la Arquitectura Estructural del Sonido</h1>
+                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Cimática">
+                <div class="img-caption">Gráfico 4.1: La interferencia de ondas organiza la materia en patrones sagrados.</div>
+                <p>¿Cómo es posible que un audio pueda sanar un órgano o aliviar ansiedad? Debemos ver el sonido como lo que es: <strong>Fuerza Mecánica y Geométrica</strong>, no solo música para entretener.</p>
+                <h2>1. La Cimática: Viendo lo Invisible</h2>
+                <p>La Cimática es el estudio visible de la vibración. El físico Ernst Chladni descubrió que al hacer vibrar arena sobre una placa de metal, las altas frecuencias formaban patrones geométricos sagrados. Los sonidos disonantes o caóticos destruían el patrón, volviéndolo asimétrico.</p>
+                <div class="quote-box" style="border-color: #00d4ff; color: #bae6fd;">"Si quieres entender el Universo, piensa en términos de energía, frecuencia y vibración." <br><span style="font-size: 1rem; color: #fbbf24; font-weight: bold;">— Nikola Tesla</span></div>
+                <h2>2. El Experimento del Dr. Masaru Emoto</h2>
+                <p>El cuerpo adulto es 70% agua. Emoto demostró que el agua tiene memoria. Al congelar agua expuesta a palabras de odio, formaba cristales rotos y feos. El agua expuesta a <strong>528 Hz</strong> y a la gratitud, formaba copos de nieve perfectos y hexagonales. Tu biología se reestructura con cada sonido que consumes.</p>
+                <div class="info-box" style="background: rgba(139, 92, 246, 0.1); border-left-color: #a64bf4;">
+                    <h3 style="color: #a64bf4; margin-top:0;"><i class="fas fa-water"></i> Tu Célula es una Placa Cimática</h3>
+                    <p>Si el sonido organiza la arena, la música violenta o el estrés aplican vibraciones caóticas en la "placa cimática" de tus células llenas de agua. Las frecuencias de sanación obligan a tu biología a organizarse en geometría de salud.</p>
+                </div>
+                <h2>3. El Peligro de los 440 Hz</h2>
+                <p>La música comercial está afinada en <strong>440 Hz</strong>, la cual no se alinea matemáticamente con la naturaleza ni con la Resonancia Schumann (el latido electromagnético de la Tierra). Esta disonancia fomenta el estado de estrés (Beta). NeuroSync usa frecuencias Solfeggio alineadas con la perfección matemática del cosmos.</p>
+            </div>
+            <div id="quiz4" class="module-section"><h1>Examen Nivel 4</h1><div class="quiz-container" id="quiz-form-4"></div></div>
+
+            <div id="mod5" class="module-section">
+                <h1>Módulo 5: Los 7 Vórtices (Endocrinología y Chakras)</h1>
+                <img src="https://images.unsplash.com/photo-1545389336-eaee37b6c501?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Sistema Endocrino">
+                <p>La ciencia esotérica de oriente y la biología de occidente son lo mismo hablado en distintos idiomas. La ubicación de los 7 Chakras coincide milimétricamente con los <strong>7 Plexos Nerviosos y las 7 Glándulas Endocrinas</strong> de tu cuerpo físico. Los chakras transducen la energía cuántica en electricidad, ordenando a las glándulas secretar hormonas (química).</p>
+                <h2>Mapeo Bio-Energético de Vórtices</h2>
+                <ul>
+                    <li><strong>1. Raíz (396 Hz / Suprarrenales):</strong> Dinero, seguridad, hogar. Si tienes deudas crónicas, las glándulas bombean cortisol por miedo y este vórtice colapsa.</li>
+                    <li><strong>2. Sacro (417 Hz / Gónadas):</strong> Placer, creatividad. Bloqueado por la <strong>culpa</strong>. Sentir culpa por desear dinero corta la creación.</li>
+                    <li><strong>3. Plexo Solar (528 Hz / Páncreas):</strong> Voluntad, autoestima. Bloqueado por la <strong>vergüenza</strong>. Somatiza gastritis cuando no pones límites.</li>
+                    <li><strong>4. Corazón (639 Hz / Timo):</strong> Puente entre materia (abajo) y espíritu (arriba). Bloqueado por el <strong>dolor, luto y rencor</strong>.</li>
+                    <li><strong>5. Garganta (741 Hz / Tiroides):</strong> Expresión y verdad. Bloqueado por las <strong>mentiras</strong> y por las molestias laborales que te "tragas".</li>
+                    <li><strong>6. Tercer Ojo (852 Hz / Pineal-Pituitaria):</strong> Intuición y visión. Bloqueado por la <strong>ilusión de separación</strong> (creer que estás aislado del universo).</li>
+                    <li><strong>7. Corona (963 Hz / Hipotálamo):</strong> Iluminación y unidad divina. Bloqueado por los apegos mundanos.</li>
+                </ul>
+                <div class="info-box">
+                    <p><strong>Regla de Oro:</strong> La energía (Kundalini) sube. No intentes abrir tu Tercer Ojo si no sabes pagar tu renta (Chakra 1). Debes sanar el miedo financiero para enraizarte antes de intentar alcanzar la iluminación superior.</p>
+                </div>
+            </div>
+            <div id="quiz5" class="module-section"><h1>Examen Nivel 5</h1><div class="quiz-container" id="quiz-form-5"></div></div>
+<div id="mod6" class="module-section">
+                <h1>Módulo 6: Neuroplasticidad y Reprogramación del Subconsciente</h1>
+                <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Neuroplasticidad">
+                <p>Hasta hace poco, la ciencia creía que el cerebro adulto era fijo. Hoy, la <strong>Neuroplasticidad</strong> demuestra que el cerebro es dinámico: tiene la capacidad de cambiar su estructura física, crear nuevas redes neuronales y destruir las viejas a lo largo de toda tu vida, dependiendo de lo que pienses y sientas.</p>
+                <h2>1. La Ley de Hebb</h2>
+                <p>El postulado del neuropsicólogo Donald Hebb dice: <em>"Las neuronas que se disparan juntas, se conectan juntas"</em>. Si llevas años sintiendo ansiedad cada vez que revisas tu cuenta bancaria, has fusionado el pensamiento "dinero" con la emoción "miedo", creando un cable de titanio físico en tu cerebro.</p>
+                <p>Para romper este cable, no basta con desear dinero. Debes dejar de disparar la antigua emoción de miedo y empezar a asociar una nueva emoción elevada (como la Gratitud) al concepto de dinero, forzando al cerebro a construir un nuevo puente físico.</p>
+                <h2>2. El Sistema Activador Reticular (RAS)</h2>
+                <p>El RAS es una red de neuronas en el tronco encefálico que funciona como el filtro de tu realidad. De los millones de bits de datos que te rodean, el RAS solo te muestra lo que tú consideras vital o lo que valida tus creencias. Si tu creencia interna (tu red neuronal) es que "es imposible ganar dinero en este país", tu RAS literalmente <strong>filtrará y te hará ciego</strong> a las oportunidades financieras que pasen por delante de tu cara, mostrándote solo noticias de crisis para validar tu creencia.</p>
+                <h2>3. El Hackeo Subconsciente</h2>
+                <p>¿Por qué las afirmaciones positivas ("Soy millonario") fallan si las dices manejando o trabajando? Porque en el Estado Beta, la mente analítica (tu Ego) actúa como guardia de seguridad y rechaza la afirmación porque "no es cierta" en base a tu pasado.</p>
+                <p>Al escuchar NeuroSync, bajas a <strong>Estado Theta (4-8 Hz)</strong>, el guardia de seguridad se duerme, y puedes insertar la instrucción directa al disco duro. Al repetir esto durante un mínimo de <strong>21 días</strong> (el tiempo que tarda la neuroplasticidad en consolidarse), el cerebro forma el nuevo cable. Tu RAS se actualiza y empiezas a notar las oportunidades que antes eran invisibles.</p>
+            </div>
+            <div id="quiz6" class="module-section"><h1>Examen Nivel 6</h1><div class="quiz-container" id="quiz-form-6"></div></div>
+
+            <div id="mod7" class="module-section">
+                <h1>Módulo 7: Códigos Sagrados y Geometría Matemática</h1>
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Matemáticas del universo">
+                <p>El universo no procesa el idioma español ni el inglés; el universo se comunica a través de matemáticas y vibración electromagnética. La secuencia de Fibonacci y la Proporción Áurea demuestran que todo, desde los huracanes hasta los girasoles, sigue un orden matemático perfecto.</p>
+                <h2>1. ¿Qué son los Códigos Sagrados?</h2>
+                <p>Investigadores de la conciencia (como Grabovoi o Agesta) han canalizado combinaciones numéricas específicas. Los números son paquetes de información hiper-concentrada. Un Código Sagrado actúa como una <strong>"Dirección IP" o un atajo cuántico</strong> que conecta tu campo electromagnético directamente con una dimensión o frecuencia elevada, sin tener que hacer años de meditación.</p>
+                <h2>2. El Error de la Repetición Vacía</h2>
+                <p>Repetir un número mecánicamente sin sentir emoción es aplicar Fuerza sin Voltaje. La emoción del deseo ya cumplido es el imán magnético que activa el código en el mundo material.</p>
+                <div class="info-box">
+                    <h3 style="color: #00d4ff; margin-top:0;">Método de Activación Avanzada</h3>
+                    <p>Para encender el código con máxima potencia:</p>
+                    <ol>
+                        <li>Ponte tus audífonos con NeuroSync (Ej. 888 Hz para abundancia).</li>
+                        <li>Siente en el centro de tu pecho la gratitud de que el deseo ya está resuelto.</li>
+                        <li>Visualiza el código numérico brillando en color dorado brillante frente a tu tercer ojo.</li>
+                        <li>Repite el código <strong>exactamente 45 veces</strong> seguidas. El 45 es el número sagrado de la manifestación material acelerada.</li>
+                    </ol>
+                </div>
+                <h2>3. Códigos Maestros Frecuentes</h2>
+                <p><strong>520</strong> (Llegada de dinero inesperado).<br>
+                <strong>71588</strong> (Atracción magnética de clientes).<br>
+                <strong>1</strong> (Paz Interior y centrado rápido).<br>
+                <strong>52189</strong> (Sanación de memorias de dolor y lazos familiares ancestrales).</p>
+            </div>
+            <div id="quiz7" class="module-section"><h1>Examen Nivel 7</h1><div class="quiz-container" id="quiz-form-7"></div></div>
+<div id="mod8" class="module-section">
+                <h1>Módulo 8: Epigenética y Modificación del ADN</h1>
+                <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="ADN brillante">
+                <div class="img-caption">Gráfico 8.1: La expresión genética es alterada por el entorno electromagnético.</div>
+                <p>El dogma médico del siglo XX afirmaba que tú eras una víctima de tu herencia. Si en tu familia había cáncer o depresión, el <strong>Determinismo Genético</strong> decía que estabas condenado por tu ADN. El biólogo celular Dr. Bruce Lipton y la ciencia de la Epigenética destruyeron esta falsedad.</p>
+                <h2>1. El Entorno Gobierna a la Célula</h2>
+                <p>La Epigenética ("Por encima de la genética") demuestra que el gen es solo un plano arquitectónico inerte. No puede encenderse ni apagarse a sí mismo. El "contratista" que decide si un gen de enfermedad se activa o se silencia es el <strong>Entorno Químico</strong> en el que flota la célula (tu sangre).</p>
+                <p>¿Y quién controla el entorno químico de tu sangre? Al 100%, tu sistema nervioso, el cual responde ciegamente a tus <strong>Percepciones y Emociones</strong> del mundo exterior.</p>
+                <h2>2. Hormonas de Supervivencia vs. Creación</h2>
+                <p>Si percibes el mundo desde el victimismo, el estrés o el miedo, tu cerebro asume que un tigre dientes de sable te persigue y libera <strong>Cortisol y Adrenalina</strong>. En ese estado, la sangre abandona los órganos internos vitales y va hacia tus brazos y piernas para huir. El crecimiento y reparación celular se detienen, y los genes de la enfermedad se encienden por falta de energía sistémica.</p>
+                <p>Si cambias tu percepción al amor y la gratitud profunda, liberas <strong>Oxitocina y Dopamina</strong>. Esta química sanadora silencia los genes defectuosos, envía sangre nutritiva a los órganos y repara los <strong>telómeros</strong> (los extremos de los cromosomas responsables de la juventud biológica).</p>
+                <div class="quote-box" style="border-color: #34d399; color: #a7f3d0;">Tu mente consciente y subconsciente tiene autoridad absoluta sobre el comportamiento celular. Eres el amo de tu biología.</div>
+                <h2>3. La Frecuencia 528 Hz</h2>
+                <p>La vibración de 528 Hz resuena directamente en armonía con el núcleo de la célula. Se conoce como la Frecuencia de los Milagros porque los genetistas vanguardistas han observado que aumenta la absorción de luz ultravioleta en el ADN in vitro, facilitando la auto-reparación de cadenas rotas de ADN.</p>
+            </div>
+            <div id="quiz8" class="module-section"><h1>Examen Nivel 8</h1><div class="quiz-container" id="quiz-form-8"></div></div>
+
+            <div id="mod9" class="module-section">
+                <h1>Módulo 9: Corte de Lazos Kármicos y Perdón Cuántico</h1>
+                <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Liberación y sanación">
+                <p>Una ley física inquebrantable: No puedes llenar una taza que está llena de agua sucia. Si deseas manifestar una nueva realidad de abundancia, debes desconectar tu cable energético de las fugas del pasado.</p>
+                <h2>1. El Perdón como Tecnología de Liberación</h2>
+                <p>Culturalmente se nos enseñó que perdonar es un acto moral o débil ("olvidar lo que te hicieron"). En tecnología cuántica, el perdón no es aprobar el daño ajeno; <strong>es liberar al prisionero y descubrir que el prisionero eras tú</strong>. El 90% de los bloqueos severos de dinero están anclados en rencores sistémicos hacia los padres o ex-parejas (bloqueos en el Chakra Raíz y Sacro).</p>
+                <p>Odiar a alguien es el equivalente energético de beber veneno y esperar que el otro muera. Mantienes tu propia frecuencia por debajo de 200 Hz (Escala de Hawkins), impidiendo cualquier magnetismo de riqueza.</p>
+                <h2>2. Protocolo Ho'oponopono (La Asunción de Responsabilidad)</h2>
+                <p>Basado en la antigua filosofía hawaiana, este protocolo entiende que todos compartimos un campo unificado. Todo lo que te hirió fue atraído por resonancia tuya. Si asumes el 100% de la responsabilidad, recuperas el 100% de tu poder creador.</p>
+                <p>Repetir con la emoción del perdón: <em>"Lo Siento (por la memoria en mí que co-creó esto). Perdóname (por mi juicio). Gracias (por ser el maestro de esta lección). Te Amo (te reconozco como parte de la Unidad y libero la ilusión de separación)."</em></p>
+                <div class="info-box">
+                    <h3 style="color: #00d4ff; margin-top:0;"><i class="fas fa-cut"></i> Ejercicio Quirúrgico de Corte de Lazos</h3>
+                    <p>Conecta la frecuencia <strong>396 Hz (Liberación de Miedo y Culpa)</strong>. Cierra los ojos. Visualiza a la persona frente a ti. Observa un cable negro y grueso que sale de tu ombligo y se conecta con el suyo (el lazo kármico tóxico). Mentalmente, visualiza unas tijeras de luz dorada gigante. Corta el cable de un tajo. Siente cómo la tensión en tu estómago desaparece. Mira cómo la persona se da la vuelta y camina hacia la luz. Estás libre.</p>
+                </div>
+            </div>
+            <div id="quiz9" class="module-section"><h1>Examen Nivel 9</h1><div class="quiz-container" id="quiz-form-9"></div></div>
+<div id="mod10" class="module-section">
+                <h1>Módulo 10: El Salto Cuántico y la Integración Final</h1>
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Universo cuántico">
+                <p>Has cruzado el velo. Ahora posees el conocimiento reservado para los maestros iniciados y el respaldo de la física más avanzada. Pero recuerda la regla máxima: <strong>El conocimiento sin acción es solo entretenimiento, es potencial no colapsado.</strong> Es hora de materializar el trabajo.</p>
+                <h2>1. La Ley de la Asunción de Neville Goddard</h2>
+                <p>El error final del buscador es seguir "Deseando". Desear algo significa que emites una señal electromagnética de separación: "No lo tengo, por lo tanto sufro y lo quiero". El universo te devuelve esa escasez reflejada en tu mundo 3D.</p>
+                <p>Neville Goddard enseñó el código de la materialización rápida: <strong>No manifiestas lo que quieres; manifiestas aquello de lo que eres consciente de SER.</strong> Debes usar tu imaginación (en estado Theta) para "Asumir" el estado de la persona que ya tiene el deseo resuelto. Debes sentir la naturalidad de la meta cumplida AHORA, en tiempo presente.</p>
+                <h2>2. Tu Rutina de Alquimista Cuántico (Protocolo 21 Días)</h2>
+                <p>Al pasar de ser víctima a ser el Observador Consciente, esta será tu estructura de vida:</p>
+                <ul>
+                    <li><strong>Fase A.M. (Inserción Matutina):</strong> Al despertar, tu cerebro aún está en ondas Alfa/Theta. No toques el celular. Colócate NeuroSync (432 Hz o 888 Hz), cierra los ojos, e imagina una escena corta de tu meta cumplida. Siente la profunda gratitud en tu pecho. Hazlo por 5 a 10 minutos.</li>
+                    <li><strong>Fase P.M. (Higiene Diurna):</strong> Eres un atleta espiritual. Si durante el día enfrentas jefes o clientes tóxicos, no te enganches. Aplica la técnica de la Burbuja Espejo. Si te da ansiedad el dinero, repite internamente el Código Sagrado 1 o 520 para forzar el retorno a la paz.</li>
+                    <li><strong>Fase Nocturna (Reprogramación Delta):</strong> Al dormir, tu cerebro entra en Estado Delta (reparación celular profunda). Pon NeuroSync en bucle infinito junto a tu cama. Deja que las ondas reconstruyan tu sistema nervioso mientras tu consciente duerme.</li>
+                </ul>
+                <div class="quote-box" style="border-color: #10b981; color: #a7f3d0;">
+                    El Universo ya es tuyo en la Mente de Dios. Deja de pedir permiso para habitar la realidad financiera y biológica que mereces por derecho de consciencia. Sal de aquí y colapsa la onda.
+                </div>
+            </div>
+            <div id="quiz10" class="module-section"><h1>Examen Final de Acreditación</h1><div class="quiz-container" id="quiz-form-10"></div></div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS DE LOS 10 EXÁMENES (100 Preguntas)
+        // ==========================================
+        const allQuizzes = {
+            1: [
+                { q: "1. En el Experimento de la Doble Rendija, ¿qué sucede cuando la partícula es observada?", options: ["A) Aumenta su velocidad.", "B) El observador altera la gravedad.", "C) La onda de probabilidad colapsa y se materializa como partícula sólida.", "D) El electrón desaparece.", "E) La materia se vuelve antimateria."], ans: 2 },
+                { q: "2. Según el Módulo 1, ¿qué es la Default Mode Network (DMN)?", options: ["A) El sistema inmunológico celular.", "B) Red neuronal responsable del diálogo interno, la ansiedad y el sostenimiento del Ego.", "C) La región del cerebro visual.", "D) Frecuencia de radio.", "E) Nervios pulmonares."], ans: 1 },
+                { q: "3. ¿Por qué ocurre la 'Desrealización' (pérdida de identidad) durante el despertar?", options: ["A) Por toxinas en la sangre.", "B) Daño de frecuencias al oído.", "C) Proceso neurobiológico necesario donde la antigua red neuronal se desarma para crear un lienzo en blanco.", "D) Efecto secundario psiquiátrico.", "E) Castigo kármico."], ans: 2 },
+                { q: "4. ¿Cuál de estos síntomas es común en el despertar por hiperactividad de la Amígdala?", options: ["A) Visión perfecta.", "B) Pánico o llanto sin motivo lógico (purga de trauma celular).", "C) Ver fantasmas.", "D) Caída de cabello repentina.", "E) Ganas de consumir azúcar."], ans: 1 },
+                { q: "5. ¿Qué es el 'Spiritual Bypassing' (Evasión Espiritual)?", options: ["A) Usar doctrinas de alta vibración para reprimir y ocultar heridas psicológicas.", "B) Faltar a meditación.", "C) Viaje astral rápido.", "D) Ayunar muchos días.", "E) Rechazar dinero material."], ans: 0 },
+                { q: "6. Según el texto, ¿qué debes hacer energéticamente al sentir una tristeza profunda?", options: ["A) Repetir mantras positivos forzados.", "B) Ignorarla para no bajar la frecuencia.", "C) Aplicar la Aceptación Radical; abrazar la sombra es la vibración más alta disponible para transmutar.", "D) Distraerse con la TV.", "E) Buscar culpables."], ans: 2 },
+                { q: "7. Las sincronías numéricas (como 11:11) ocurren porque...", options: ["A) Seres manipulan los relojes.", "B) Al apagar la DMN, el cerebro expande su percepción y capta el código subyacente matemático de la realidad.", "C) Fallo en la vista.", "D) Pura casualidad estadística.", "E) Alguien piensa en ti."], ans: 1 },
+                { q: "8. ¿Cómo logran las frecuencias NeuroSync 'hackear' la resistencia del cerebro?", options: ["A) Relajando los hombros.", "B) Emisión de ultrasonidos.", "C) Inyectando dos tonos distintos que obligan al tallo cerebral a crear un Binaural Beat, arrastrando la mente a estado Theta.", "D) Mensajes de voz escondidos.", "E) Hipnosis frontal ocular."], ans: 2 },
+                { q: "9. ¿Cuál es el estado cerebral ideal para insertar nuevas instrucciones directas al subconsciente sin oposición del Ego?", options: ["A) Estado Beta", "B) Estado Gamma", "C) Estado Theta", "D) Estado Delta", "E) Estado Alfa Alto"], ans: 2 },
+                { q: "10. 'El Universo no te da lo que pides, te da lo que ERES'. Esto significa:", options: ["A) Que el karma castiga.", "B) El Campo Cuántico colapsa basándose en la firma electromagnética y vibracional profunda de tu subconsciente, no en tus palabras superficiales.", "C) Debes rezar más tiempo.", "D) Nada cambia.", "E) Dios decide aleatoriamente."], ans: 1 }
+            ],
+            2: [
+                { q: "1. Desde la perspectiva holística, ¿cuál es el origen real de una enfermedad física crónica?", options: ["A) Aire contaminado únicamente.", "B) Azar genético inamovible.", "C) Un bloqueo emocional o mental no resuelto que, por no limpiarse, se densificó hasta alcanzar el cuerpo físico.", "D) Castigo del destino.", "E) Efecto de frecuencias muy altas."], ans: 2 },
+                { q: "2. ¿Qué capa del aura almacena las creencias limitantes y los patrones de pensamiento lógicos?", options: ["A) Cuerpo Físico", "B) Cuerpo Etérico/Emocional", "C) Cuerpo Mental", "D) Cuerpo Espiritual", "E) Cuerpo Astral Superior"], ans: 2 },
+                { q: "3. ¿Dónde se almacena el trauma y el odio no procesado, acumulándose como lodo energético?", options: ["A) En el páncreas biológico.", "B) En el Cuerpo Emocional.", "C) En la Glándula Pineal.", "D) Se evapora solo con los años.", "E) En el Campo Toroidal planetario."], ans: 1 },
+                { q: "4. La función del Cuerpo Espiritual o Causal es:", options: ["A) Digerir alimentos sutiles.", "B) Regenerar músculos de noche.", "C) Conectarte directamente con el Campo Cuántico unificado y contener el propósito de tu alma.", "D) Regular el miedo.", "E) Crear pensamientos eléctricos."], ans: 2 },
+                { q: "5. Geométricamente, el campo electromagnético del corazón tiene forma de:", options: ["A) Pirámide", "B) Cubo Perfecto", "C) Toroide (dona o manzana)", "D) Cilindro estático", "E) Espiral plana unidireccional"], ans: 2 }
+,{ q: "6. Según el Instituto HeartMath, la fuerza electromagnética del corazón frente al cerebro es:", options: ["A) Ambas son idénticas en fuerza.", "B) El cerebro domina y es 100 veces más fuerte.", "C) El corazón es 5,000 veces más potente que el cerebro.", "D) Solo el cerebro emite campos medibles.", "E) El cerebro es 5,000 veces más fuerte."], ans: 2 },
+                { q: "7. Una 'Fuga Áurica' (Toroide colapsado) se define como:", options: ["A) Una perforación en tu campo protector originada por estrés crónico, por donde tu vitalidad se fuga y por donde absorbes densidad ajena.", "B) Transpiración nocturna intensa.", "C) Liberación de energía positiva extra.", "D) Un mito new-age.", "E) Problema de hipertensión arterial."], ans: 0 },
+                { q: "8. ¿Por qué te sientes agotado tras escuchar a una persona quejumbrosa?", options: ["A) Tus oídos trabajaron mucho.", "B) Se quema mucha glucosa al estar de pie.", "C) Si tu toroide tiene fisuras, actúas como esponja, absorbiendo la densidad magnética de su cuerpo emocional.", "D) Te contagian un virus sutil.", "E) Pura sugestión y aburrimiento."], ans: 2 },
+                { q: "9. Escuchar 285 Hz o 432 Hz tiene como primer objetivo fundamental:", options: ["A) Desarrollar masa muscular etérica.", "B) Borrar recuerdos traumáticos específicos de la infancia.", "C) Inducir la 'Coherencia Cardíaca', reparando las fugas y sellando tu campo protector.", "D) Cambiar tu color de aura a dorado puro.", "E) Fomentar el viaje astral extracorpóreo."], ans: 2 },
+                { q: "10. El orden exacto de materialización de un evento es:", options: ["A) Físico -> Emocional -> Mental.", "B) Impulso eléctrico (Cuerpo Mental) -> Carga magnética densificadora (Cuerpo Emocional) -> Materialización visible (Cuerpo Físico).", "C) Cuerpo Físico -> Cuerpo Espiritual.", "D) Sucede aleatoriamente sin jerarquía.", "E) Directo del Universo a la Materia sin pasar por la Mente."], ans: 1 }
+            ],
+            3: [
+                { q: "1. ¿A qué se le denomina 'Iones Positivos' en la limpieza energética?", options: ["A) Energía espiritual de la más alta luz.", "B) Radicales libres electromagnéticos generados por el estrés y la negatividad que se pegan a tu aura.", "C) Minerales del agua.", "D) La radiación benéfica del sol del mediodía.", "E) Electrones sanadores."], ans: 1 },
+                { q: "2. El Vampirismo Energético suele ocurrir inconscientemente debido a la ley física de termodinámica, que establece que:", options: ["A) La energía desaparece si no se cuida.", "B) La energía rebota entre paredes espejadas.", "C) La energía siempre fluirá de una persona vibrando alto (mayor concentración) a una deprimida (vacío).", "D) Las personas deprimidas emiten electricidad estática agresiva.", "E) La energía se congela en el frío."], ans: 2 },
+                { q: "3. La sal marina o gruesa se usa en baños de limpieza porque:", options: ["A) Deja la piel más suave.", "B) Tiene un aroma relajante para el cerebro.", "C) Al disolverse en agua conductora, resetea la polaridad de tu campo y corta cordones etéricos parasitarios.", "D) Su color blanco ahuyenta malos espíritus de forma mágica.", "E) Fue un invento moderno sin respaldo."], ans: 2 },
+                { q: "4. La práctica del Earthing (Caminar descalzo sobre pasto/tierra) funciona para:", options: ["A) Endurecer la planta del pie.", "B) Hablar con las raíces vegetales.", "C) Descargar el exceso de estática de supervivencia hacia la Tierra, que te devuelve iones negativos reparadores.", "D) Absorber directamente minerales orgánicos.", "E) Equilibrar el peso corporal."], ans: 2 },
+                { q: "5. En la Burbuja Espejo para evitar ataques, la capa externa debe visualizarse como:", options: ["A) Agua en movimiento.", "B) Material de titanio-espejo para que todo ataque rebote hacia su emisor original.", "C) Fuego violeta destructor.", "D) Cuarzo rosa absorbente.", "E) Piedra sólida e impenetrable."], ans: 1 },
+                { q: "6. ¿Por qué se debe respirar en ciclo 4-4-4 antes de crear el escudo?", options: ["A) Para oxigenar mejor los riñones.", "B) Para generar calor físico.", "C) Para apagar la respuesta de lucha-huida de la amígdala y permitir la visualización clara.", "D) Para cansar el cuerpo y dormir.", "E) Es un requisito para activar la voz."], ans: 2 },
+                { q: "7. ¿Por qué se sugiere que el Sonido limpia habitaciones de forma más contundente que el Humo (Palo santo)?", options: ["A) El humo mancha las paredes blancas.", "B) Las ondas sonoras son fuerza mecánica rápida que sacude y desintegra la estática acumulada en el espacio.", "C) El palo santo ya no crece.", "D) El sonido invoca ángeles protectores que limpian la casa.", "E) Porque el humo solo funciona de noche."], ans: 1 },
+                { q: "8. Las frecuencias consideradas un 'Bisturí Sónico' de limpieza y transmutación de toxinas son:", options: ["A) 417 Hz y 741 Hz.", "B) 100 Hz y 200 Hz.", "C) 8 Hz constantes.", "D) 440 Hz (Standard).", "E) 999 Hz y más."], ans: 0 },
+                { q: "9. Verdadero o Falso: Una persona siempre sabe que te está robando energía vital (es maldad consciente).", options: ["A) Verdadero, es hechicería intencional siempre.", "B) Falso, en el 90% de los casos ocurre por la termodinámica del cuerpo emocional de la persona vacía, sin su intención consciente.", "C) Verdadero, nadie roba sin saberlo.", "D) Falso, la energía no se puede robar.", "E) Depende de su signo."], ans: 1 },
+                { q: "10. Acudir a un centro comercial u hospital sin sellar tu campo resulta en:", options: ["A) Una experiencia de iluminación.", "B) Atracción de abundancia material inmediata.", "C) Convertirte en una aspiradora de la densidad colectiva de pánico o dolor, agotando tus reservas.", "D) Inmunidad a los virus del aire.", "E) No tiene ningún efecto, el cuerpo siempre está protegido naturalmente."], ans: 2 }
+            ],
+            4: [
+                { q: "1. ¿A qué se dedica el estudio de la 'Cimática'?", options: ["A) Al estudio del movimiento de las estrellas.", "B) A la ciencia de los aromas y perfumes curativos.", "C) Al estudio de cómo la frecuencia y vibración sonora organiza la materia visiblemente.", "D) Al estudio de ondas electromagnéticas de celulares.", "E) A una técnica de quiropráctica vocal."], ans: 2 },
+                { q: "2. En los experimentos clásicos sobre placas de metal, un sonido caótico y ruidoso generó:", options: ["A) Geometría sagrada perfecta.", "B) Que la arena flotara mágicamente en el aire.", "C) Patrones totalmente asimétricos, dispersos y caóticos.", "D) Agujeros en el metal sólido.", "E) Nada, la arena quedó quieta."], ans: 2 },
+                { q: "3. ¿Por qué las frecuencias tienen un efecto físico radical en los humanos en lugar de ser solo 'efecto psicológico'?", options: ["A) Porque los huesos de las orejas son huecos.", "B) Porque la piel absorbe sonido a través de los poros grandes.", "C) Porque somos 70-80% agua, y el agua es un fluido altamente sensible a la reestructuración por vibración.", "D) Porque nuestro cerebro es metálico en su centro.", "E) No tienen un efecto físico real, todo es imaginación."], ans: 2 },
+                { q: "4. El Dr. Masaru Emoto demostró que el agua...", options: ["A) Tiene memoria y su estructura molecular cambia de hermosa a repulsiva dependiendo de la información/vibración que recibe.", "B) Se evapora si le gritas.", "C) Pierde oxígeno al escuchar música lenta.", "D) Cambia de color si le pones música clásica.", "E) Responde mejor a la música triste que a la alegre."], ans: 0 },
+                { q: "5. En los cristales de hielo de Emoto, ¿qué frecuencia formó mandalas y copos de nieve simétricos impecables?", options: ["A) El ruido blanco de radio antigua.", "B) 528 Hz (La frecuencia asociada al Amor).", "C) 440 Hz (Música popular moderna).", "D) El sonido de la televisión de noticias.", "E) 14 Hz."], ans: 1 },
+                { q: "6. El estrés crónico en la biología celular equivale a:", options: ["A) Estimular los músculos para hacerse más fuertes.", "B) Aplicar ruido disonante sobre nuestra 'placa cimática', desorganizando la geometría de la salud.", "C) Prevenir el envejecimiento temprano.", "D) Aumentar la concentración de glóbulos blancos sanadores.", "E) Ninguna de las anteriores."], ans: 1 },
+                { q: "7. ¿Por qué la afinación comercial mundial en A=440 Hz es problemática para el despertar?", options: ["A) Porque suelta demasiados bajos que rompen bocinas.", "B) Porque cuesta más dinero reproducirla digitalmente.", "C) Porque desconecta al oyente de la armonía fractal de la naturaleza y fomenta el Estado Beta de estrés y supervivencia.", "D) Porque hace que la gente duerma mucho y no trabaje.", "E) No hay problema, es la mejor afinación descubierta."], ans: 2 },
+                { q: "8. ¿Qué es la 'Resonancia Schumann' mencionada en el módulo?", options: ["A) El sonido de los cuencos tibetanos de cristal.", "B) La frecuencia latente y natural del campo electromagnético del planeta Tierra.", "C) La marca de un audífono para sanación.", "D) Una nota musical inventada en el siglo XX.", "E) La frecuencia del sol en el espacio vacío."], ans: 1 },
+                { q: "9. La música sintonizada en las Frecuencias Solfeggio busca lograr:", options: ["A) Alejar a los animales molestos.", "B) Mantenerte en un estado Beta hiperactivo.", "C) Obligar a tu biología celular a re-organizarse en patrones de geometría de sanación y coherencia.", "D) Borrar los sueños de la noche anterior.", "E) Enseñar notas musicales difíciles a cantantes."], ans: 2 },
+                { q: "10. La célebre cita para entender los secretos del universo ('piensa en términos de energía, frecuencia y vibración') pertenece a:", options: ["A) Albert Einstein", "B) Carl Jung", "C) Masaru Emoto", "D) Nikola Tesla", "E) Isaac Newton"], ans: 3 }
+            ],
+            5: [
+                { q: "1. Anatómicamente, los 7 chakras coinciden con total precisión con:", options: ["A) Los 7 huesos más grandes del esqueleto.", "B) Los 7 órganos digestivos.", "C) Los principales Plexos Nerviosos y Glándulas Endocrinas.", "D) Los hemisferios del cerebro únicamente.", "E) Vasos sanguíneos de las piernas."], ans: 2 },
+                { q: "2. Las glándulas suprarrenales bombean cortisol por miedo a deudas o supervivencia física. Esto bloquea el:", options: ["A) Plexo Solar (Tercero)", "B) Chakra Raíz (Primero)", "C) Chakra Garganta (Quinto)", "D) Chakra Corona (Séptimo)", "E) Chakra Corazón (Cuarto)"], ans: 1 },
+                { q: "3. La creatividad y el placer pertenecen al Chakra Sacro (Gónadas). ¿Cuál es su veneno o bloqueador principal?", options: ["A) El Miedo extremo.", "B) El Dolor emocional.", "C) La Culpa paralizante.", "D) La Vergüenza pública.", "E) El Apego espiritual."], ans: 2 },
+                { q: "4. Si sufres de gastritis crónica por no saber poner límites o tener baja autoestima, el vórtice afectado es:", options: ["A) El Tercer Ojo.", "B) El Chakra Raíz.", "C) El Chakra Garganta.", "D) El Plexo Solar (Páncreas).", "E) El Chakra Corona."], ans: 3 },
+                { q: "5. El Chakra del Corazón actúa como puente entre los chakras físicos e intuitivos. Se bloquea profundamente por:", options: ["A) Las mentiras dichas.", "B) La falta de dinero material.", "C) El luto prolongado, rencores fuertes y el dolor cerrado al amor.", "D) Excesivo orgullo intelectual.", "E) Miedo a los fantasmas."], ans: 2 }
+,{ q: "6. Si habitualmente prefieres tragarte tus opiniones para no molestar a otros y mientes sobre cómo te sientes, dañarás tu:", options: ["A) Glándula Tiroides (Chakra Garganta).", "B) Timo (Chakra Corazón).", "C) Páncreas (Plexo Solar).", "D) Suprarrenales.", "E) Ovarios/Testículos."], ans: 0 },
+                { q: "7. La 'Ilusión de la separación' (la creencia irracional de que tú eres una cosa y el universo otra distante) tapa el funcionamiento de:", options: ["A) La Garganta.", "B) La Glándula Pineal / Pituitaria (Tercer Ojo).", "C) El Chakra Raíz.", "D) El Plexo Solar.", "E) La respiración pulmonar."], ans: 1 },
+                { q: "8. La regla fundamental enseñada en este módulo sobre el ascenso de la energía (Kundalini) advierte que:", options: ["A) Debes enfocarte primero en la iluminación del Chakra 7 por encima de todo.", "B) Debes abrir el Tercer ojo rápidamente con plantas alucinógenas.", "C) No intentes volar si no tienes raíces. Si no sabes pagar tu renta (Chakra 1), intentar abrir el Tercer Ojo causará desequilibrio psicológico.", "D) Los chakras bajos son sucios y hay que evitarlos.", "E) Se pueden abrir todos a la vez en 5 minutos."], ans: 2 },
+                { q: "9. ¿Cómo transforma un Chakra la energía sutil invisible en cambios de humor físicos y tangibles?", options: ["A) Haciendo calor en la piel.", "B) Transduciendo fotones cuánticos en señales eléctricas que ordenan al sistema endocrino inyectar hormonas (química) a la sangre.", "C) Respirando aire extra hacia el estómago.", "D) Creando vibraciones audibles a los oídos.", "E) Los chakras no pueden afectar el cuerpo físico real."], ans: 1 },
+                { q: "10. Para asistir energéticamente al Chakra Corazón dañado, deberías programar NeuroSync en la frecuencia:", options: ["A) 396 Hz", "B) 852 Hz", "C) 639 Hz", "D) 417 Hz", "E) 963 Hz"], ans: 2 }
+            ],
+            6: [
+                { q: "1. El descubrimiento de la Neuroplasticidad derribó la idea de que:", options: ["A) El cerebro adulto era estático y ya no podía generar nuevas conexiones ni cambiar su estructura tras la juventud.", "B) Solo el lado derecho era creativo.", "C) Teníamos un cerebro reptiliano.", "D) La memoria residía en el corazón.", "E) El cerebro consumía oxígeno."], ans: 0 },
+                { q: "2. La Ley de Hebb establece literalmente que:", options: ["A) Las emociones positivas pesan menos que las negativas.", "B) Las neuronas que se disparan juntas, se conectan físicamente (creando redes fuertes por asociación).", "C) Pensar quema calorías masivamente.", "D) Las neuronas mueren cada 7 años.", "E) El ego se aloja en el hemisferio izquierdo."], ans: 1 },
+                { q: "3. ¿Para qué utiliza el cerebro el Sistema Activador Reticular (RAS)?", options: ["A) Para bombear sangre en caso de ataque.", "B) Para filtrar los millones de datos del entorno, mostrándote solo aquello que coincida y valide tus creencias dominantes internas.", "C) Para procesar el sentido del gusto.", "D) Para comunicarse con las células musculares.", "E) Para dormir sin soñar."], ans: 1 },
+                { q: "4. Si instalas la red neuronal de que 'ganar dinero es fácil y noble', el RAS de tu cerebro:", options: ["A) Bloqueará tu visión temporalmente.", "B) Hará que tus oídos zumben.", "C) Modificará su filtro de inmediato para empezar a mostrarte negocios, personas y oportunidades que antes eran invisibles para ti.", "D) Causará dolores de cabeza.", "E) Apagará el deseo sexual temporalmente."], ans: 2 },
+                { q: "5. ¿Por qué repetir afirmaciones positivas mientras manejas en tráfico denso (Estado Beta) no suele funcionar?", options: ["A) Porque hablas en voz muy baja.", "B) Porque el Estado Beta mantiene despierta la mente analítica (Ego) que rechaza como falsa cualquier información que no coincida con tus fracasos del pasado.", "C) Porque los autos interfieren electromagnéticamente.", "D) Porque estás mirando la calle.", "E) Porque se necesita cantarlas, no decirlas."], ans: 1 },
+                { q: "6. Para evadir la barrera analítica del Ego, el mejor estado cerebral para inyectar reprogramaciones es:", options: ["A) Estado de pánico alerta (Alta Beta).", "B) Estado profundo sin consciencia de coma (Epsilon).", "C) Estado Theta, el umbral de la hipnosis donde la neuroplasticidad es máxima sin resistencia lógica.", "D) Estado Gamma, de hiperenfoque intelectual.", "E) Estado Delta."], ans: 2 },
+                { q: "7. Si el pensamiento 'Deuda' siempre disparó la emoción 'Miedo' en ti, el puente para desarmar esa red tóxica es:", options: ["A) Castigar el pensamiento pellizcándote.", "B) Obligarte a dejar de disparar la emoción antigua y, en meditación, fusionar la imagen del dinero con la emoción de 'Gratitud', construyendo una autopista nueva.", "C) Llorar siempre que se piense en deuda.", "D) Fingir que el dinero no es necesario en este planeta.", "E) Culpar a los sistemas bancarios mundiales."], ans: 1 },
+                { q: "8. ¿Cuál es el mínimo de tiempo aceptado para consolidar un nuevo circuito físico neuronal de un hábito o creencia?", options: ["A) 3 días consecutivos.", "B) 7 días consecutivos.", "C) Alrededor de 21 días de inyección sin oposición emocional.", "D) 100 horas seguidas.", "E) Solo un instante profundo."], ans: 2 },
+                { q: "9. Si usas las frecuencias de NeuroSync, el cambio de vida no viene por 'arte de magia', sino porque:", options: ["A) Se invocan genios invisibles de la lámpara.", "B) Forzaste mecánicamente a tu cerebro a entrar en estado receptivo para actualizar tu 'software' de percepción y creencias.", "C) Borraste a tu Ego físicamente del cráneo con vibraciones agudas.", "D) Limpiaste tu habitación del polvo.", "E) Sufriste una alucinación hipnótica sana."], ans: 1 },
+                { q: "10. Tú y un amigo caminan por la misma calle. Él encuentra dinero en el suelo y tú no. La neurociencia diría que:", options: ["A) Él tiene mejor karma de sus vidas pasadas.", "B) Dios lo premió a él por sufrir menos.", "C) El RAS de su cerebro no estaba bloqueado para la percepción de abundancia en su campo visual; el tuyo sí.", "D) Él miró hacia abajo por coincidencia pura.", "E) Tú estabas ocupado ignorando intencionalmente la calle."], ans: 2 }
+            ],
+            7: [
+                { q: "1. ¿Por qué los códigos sagrados funcionan si los números son solo símbolos abstractos?", options: ["A) No funcionan, es sugestión barata.", "B) Los números no son abstractos; son el lenguaje base de la geometría y estructuración de este holograma cuántico universal.", "C) Porque un chamán de antaño los bendijo mágicamente.", "D) Por las supersticiones de civilizaciones de Mesopotamia.", "E) Porque se ven bonitos en papel."], ans: 1 },
+                { q: "2. La mejor analogía para comprender la acción de un Código Sagrado es considerarlo como:", options: ["A) Un amuleto protector contra balas.", "B) Un remedio farmacéutico.", "C) Una Dirección IP de internet que te conecta sin rodeos a un campo de información de altísima frecuencia.", "D) Un veneno para la mente analítica.", "E) Un ejercicio matemático de colegio."], ans: 2 },
+                { q: "3. El error catastrófico de repetir números como loro sin sentir nada es que:", options: ["A) Te cansa mucho la voz.", "B) Gastas saliva en vano.", "C) Estás aplicando solo la Fuerza (intención mental) sin el Voltaje (la emoción del corazón) necesario para colapsar la onda en materia.", "D) Rompes el código sagrado.", "E) Atraes entidades de mala suerte por falta de respeto."], ans: 2 },
+                { q: "4. ¿Por qué se repiten 45 veces y no 10 o 50?", options: ["A) Porque el 45 es el número que el inventor calculó sin razón clara.", "B) Porque en la ciencia mística, el 45 es la vibración maestra del poder de aceleración de la manifestación en el mundo material.", "C) Para asegurar que no se olvide el número.", "D) Para perder el tiempo en silencio.", "E) Para cansar al Ego."], ans: 1 },
+                { q: "5. Usar NeuroSync de fondo mientras haces tu secuencia numérica es superior a hacerla en silencio porque:", options: ["A) La música suena agradable y estética.", "B) Disimula el ruido de la calle.", "C) Entras aceleradamente al estado Theta, bloqueando las dudas de tu Ego mientras envías el código al Subconsciente puro.", "D) Ayuda a contar mejor hasta 45 sin equivocarse.", "E) Hace que los ángeles escuchen mejor tu pedido."], ans: 2 },
+                { q: "6. Código asociado universalmente al 'Dinero Inesperado':", options: ["A) 111", "B) 71588", "C) 52189", "D) 520", "E) 1"], ans: 3 },
+                { q: "7. Si sufres de ansiedad y estrés brutal al salir de la oficina, el código '1' actúa para:", options: ["A) Dormir profundo.", "B) Traer Paz Interior de forma inmediata, centrándote en tu eje.", "C) Bajar la presión arterial físicamente.", "D) Curar las heridas de la infancia.", "E) Ganar discusiones contra los jefes."], ans: 1 },
+                { q: "8. Si sabes que tu familia carga con pobreza de muchas generaciones atrás, puedes apoyar la ruptura con el código:", options: ["A) 52189 (Sanación de memorias de dolor y lazos ancestrales).", "B) 520", "C) 1", "D) 741", "E) 8888"], ans: 0 },
+                { q: "9. ¿Qué visualización se recomienda durante el ciclo de las 45 repeticiones?", options: ["A) Imaginar tus cuentas bancarias llorando lágrimas negras.", "B) No visualizar nada, solo centrarse en la respiración pulmonar oscura.", "C) Visualizar el número de luz dorada brillante suspendido en el espacio frente a ti, sintiendo su vibración expandiéndose en tu pecho.", "D) Visualizar las cosas que podrías comprar con el dinero en un shopping car.", "E) Ver caras de gente que te debe dinero y cobrarles."], ans: 2 },
+                { q: "10. La proporción Áurea (Phi) indica científicamente que:", options: ["A) La vida es producto de un accidente estelar de puro caos orgánico y sin dirección.", "B) Todas las dimensiones de creación natural obedecen a matemáticas fractales expansivas perfectas, comprobando que vivimos en un código organizado.", "C) La Tierra es el único planeta que tiene números.", "D) Es mejor estudiar letras que ciencias matemáticas.", "E) No podemos afectar el universo con números."], ans: 1 }
+            ],
+            8: [
+                { q: "1. El 'Determinismo Genético' que reinó en el siglo XX proponía equivocadamente que:", options: ["A) Los humanos evolucionan de los primates sin errores genéticos.", "B) Los genes se adaptan a la mente del humano rápidamente.", "C) El ADN predetermina y esclaviza tu destino biológico, y si heredas genética de cáncer, estás condenado.", "D) Los genes podían operarse y ser curados todos.", "E) El ADN es inútil para la herencia."], ans: 2 },
+                { q: "2. El Dr. Bruce Lipton comprobó con la Epigenética que el núcleo celular (y sus genes) no son el cerebro de la célula, sino que el verdadero controlador es:", options: ["A) La mitocondria interior que da calor biológico.", "B) La membrana celular, la cual 'lee' y reacciona al Entorno Químico de la sangre en la que flota.", "C) El cromosoma X exclusivamente materno.", "D) La radiación electromagnética de los microondas.", "E) El azar de la reproducción."], ans: 1 },
+                { q: "3. ¿Qué controla y dicta los componentes del Entorno Químico de la sangre en un momento dado?", options: ["A) Únicamente la comida masticada en las últimas 3 horas del día.", "B) La cantidad de sueño profundo de la noche anterior y la edad cronológica.", "C) Tus emociones y la percepción que tiene tu cerebro de lo que sucede en el mundo exterior.", "D) El tipo de sangre O, A o B.", "E) Nada, es totalmente aleatorio."], ans: 2 },
+                { q: "4. Si vives atascado en el victimismo sintiendo la crisis económica como un tigre que te devorará, ¿qué cóctel químico fabricas?", options: ["A) Serotonina pura.", "B) Melatonina y Endorfinas de letargo.", "C) Cortisol y Adrenalina (Hormonas de estado de emergencia y supervivencia extrema).", "D) Oxitocina celular abundante.", "E) Calcio y Sodio extra."], ans: 2 },
+                { q: "5. Cuando hay Cortisol (estrés) elevado por largo tiempo, la reacción biológica es:", options: ["A) La sangre va a los órganos viscerales para acelerar la digestión pesada y hacer crecer nuevas células sanas.", "B) La sangre huye de los órganos a las extremidades; el crecimiento, digestión e inmunidad se detienen, encendiendo genes patológicos latentes.", "C) El corazón disminuye sus latidos hasta detenerse temporalmente en meditación.", "D) Las pupilas se cierran completamente.", "E) Rejuvenecimiento de tejidos a máxima velocidad sistémica."], ans: 1 },
+                { q: "6. Al percibir la vida desde el perdón y gratitud profunda, ¿qué hormonas silenciadoras de enfermedad inyectas a tu torrente sanguíneo?", options: ["A) Toxinas.", "B) Adrenalina extra.", "C) Cortisol a niveles bajos.", "D) Dopamina y Oxitocina (Hormonas del bienestar, crecimiento y creación celular).", "E) Ácidos estomacales."], ans: 3 },
+                { q: "7. ¿Qué son los Telómeros y cómo se relacionan con las emociones?", options: ["A) Son los extremos del cromosoma; se acortan más rápido y envejeces prematuramente si vives en estrés, pero la coherencia cardíaca detiene su destrucción.", "B) Son glándulas del cuello que se enferman por guardar mentiras repetitivas.", "C) Son virus alojados en la genética que solo se eliminan comiendo fibra verde.", "D) Fibras nerviosas de la médula espinal que duelen por cargar culpas falsas.", "E) Los telómeros no están en el cuerpo humano, están en plantas exóticas."], ans: 0 }
+,{ q: "8. ¿Qué frecuencia vibratoria milagrosa absorbe el ADN en tubos de ensayo para recuperar sus estructuras rotas (estudiado in vitro)?", options: ["A) 440 Hz", "B) 111 Hz", "C) 528 Hz", "D) 852 Hz", "E) 396 Hz"], ans: 2 },
+                { q: "9. Si heredaste los genes de la diabetes tipo 2 de tu abuelo, la ciencia actual dicta que:", options: ["A) La desarrollarás en tus 40s irremediablemente.", "B) Tienes el 'plano' en tu archivo, pero si la química emocional de tu cuerpo es de paz, el gen se mantendrá silenciado sin expresarse jamás.", "C) Debes tomar medicamentos desde bebé por precaución inevitable.", "D) Es un castigo kármico por lo que hizo el abuelo.", "E) Debes aislarte en un hospital para evitar el contagio."], ans: 1 },
+                { q: "10. La conclusión máxima del Módulo Epigenético es:", options: ["A) Que el cuerpo humano es débil e imperfecto biológicamente desde el nacimiento.", "B) Que solo médicos expertos pueden alterar tu composición interna mediante operaciones costosas.", "C) Eres la autoridad soberana de tu biología; al cambiar tu percepción mental, literalmente reescribes el comportamiento de tu ADN en tiempo real.", "D) Que escuchar música no hace daño ni beneficio.", "E) Que nada de esto está comprobado por la ciencia médica."], ans: 2 }
+            ],
+            9: [
+                { q: "1. A nivel energético, guardar rencor crónico (no perdonar) a un padre o expareja produce:", options: ["A) Una protección férrea contra esa misma persona a distancia.", "B) El anclaje de tu vibración por debajo de los 200 Hz, bloqueando severamente cualquier magnetización de eventos prósperos o de dinero.", "C) Sensación de pureza moral por tener la razón psicológica.", "D) Que la otra persona enferme de culpa lentamente.", "E) Absolutamente nada, la mente no afecta las finanzas materiales."], ans: 1 },
+                { q: "2. El concepto Cuántico de Perdonar significa exactamente:", options: ["A) Llamar a tu agresor y decirle que todo está bien y justificado.", "B) Invitar a almorzar a quien te hizo daño para demostrar madurez extrema.", "C) Desconectar tu valioso cable energético de la fuga tóxica del pasado; liberar al prisionero y notar que tú eras el prisionero desangrándose.", "D) Olvidar por completo el suceso como si padeceras de amnesia total inducida.", "E) Vengarte para quedar a mano y luego avanzar."], ans: 2 },
+                { q: "3. ¿Qué postula la filosofía del protocolo Ho'oponopono para la sanación profunda de conflictos?", options: ["A) Que si tú eres bueno, la gente mala te atacará por envidia kármica inevitable.", "B) Que todos compartimos el Campo Unificado; al asumir tú el 100% de responsabilidad de co-crear (o atraer por resonancia) el suceso, recuperas tu poder.", "C) Que debes bailar bajo la lluvia para limpiar a tu agresor psicológicamente.", "D) Echarle la culpa a tus ancestros y limpiar la tumba de los abuelos.", "E) Ignorar el conflicto hasta que desaparezca con el viento estacional."], ans: 1 },
+                { q: "4. Las 4 frases de altísima potencia del Ho'oponopono son:", options: ["A) Soy Lluvia, Soy Fuego, Soy Viento, Soy Tierra.", "B) Lo Quiero, Lo Deseo, Lo Merezco, Lo Tengo.", "C) Perdono, Olvido, Supero, Avanzo.", "D) Lo Siento, Perdóname, Gracias, Te Amo.", "E) Dinero, Amor, Salud, Paz."], ans: 3 },
+                { q: "5. Al decirle 'Gracias' al holograma de quien te hizo daño dentro del protocolo, te refieres a:", options: ["A) Gracias por arruinarme la vida material.", "B) Gracias porque me diste una excusa para fracasar.", "C) Gracias por ser el actor en la obra de teatro de mi vida que me forzó a tomar la lección de evolución de mi alma.", "D) Gracias por existir en el planeta Tierra aleatoriamente.", "E) Una simple formalidad sin peso energético en la ecuación."], ans: 2 },
+                { q: "6. Para el acto Quirúrgico de Corte de Lazos, ¿qué Frecuencia de Solfeggio se utiliza para potenciar la liberación del Miedo y la Culpa profunda?", options: ["A) 963 Hz (Divinidad Pura)", "B) 888 Hz (Abundancia Finanzas)", "C) 396 Hz (Anclaje, Liberación de Raíz y Culpa Kármica)", "D) 528 Hz (Milagros Físicos celulares)", "E) 432 Hz (Armonía Fractal general)"], ans: 2 },
+                { q: "7. ¿Por qué el 90% de los bloqueos de fluidez financiera están escondidos en el odio a ex-parejas o padres?", options: ["A) Porque los abogados de divorcio cuestan muchísimo dinero material.", "B) Porque esos rencores obstruyen de lleno el Chakra Raíz (Seguridad/Padres) y el Chakra Sacro (Vínculos íntimos), cortando la entrada de prosperidad terrestre.", "C) Porque los padres bloquean cuentas bancarias al pelear.", "D) Es coincidencia estadística.", "E) Porque el cerebro usa las finanzas para distraer el luto."], ans: 1 },
+                { q: "8. En el protocolo visual de la cirugía de lazo, la conexión tóxica y pesada suele verse como:", options: ["A) Un hilo de plata luminosa conectado al Tercer Ojo.", "B) Una cuerda de oro desde la garganta.", "C) Un cable o tubo negro grueso saliendo desde tu estómago u ombligo, enlazado al de tu agresor, absorbiendo energía.", "D) Un humo verde conectando ambos pechos y pulmones.", "E) Una cadena atada a los tobillos de plomo."], ans: 2 },
+                { q: "9. Odiar y sostener rencor durante años contra tu agresor cumple en realidad la función de:", options: ["A) Mantenerte enganchado y esclavo de él para siempre, entregándole a diario grandes porciones de tu batería vital y envejeciendo más rápido.", "B) Castigarlo a él en los planos superiores oscuros de forma eficiente.", "C) Hacerte una persona más fría, calculadora y lista para los negocios.", "D) Fortalecer tu Sistema Inmunológico celular de las defensas.", "E) No tiene consecuencias físicas si no lo ves seguido en persona."], ans: 0 },
+                { q: "10. La liberación final ocurre cuando visualizas en el ejercicio:", options: ["A) Lanzarle fuego violeta destructivo a su estómago, haciéndole daño en respuesta.", "B) Encerrar a la persona en un cubo negro y esconderlo en una montaña de la imaginación.", "C) Tijeras de luz dorada cortando de un tajo la conexión; sintiendo cómo tu abdomen se relaja y observando cómo la persona se voltea y camina hacia la luz libre.", "D) Llorar abrazándolo y rogándole que regrese contigo en el futuro.", "E) Entregarle un cheque imaginario para saldar la deuda que te hizo."], ans: 2 }
+            ],
+            10: [
+                { q: "1. Según la maestría cuántica de Neville Goddard expuesta en la Integración, 'Desear' algo fuertemente es el mayor error para manifestarlo porque:", options: ["A) Dios castiga a los que piden más cosas materiales en vez de espirituales.", "B) El deseo en sí mismo emite la señal de 'Carencia'. Tu firma vibratoria grita al universo 'No lo tengo'. Y el universo colapsa más 'No lo tengo' para ti.", "C) Desear te desconcentra del trabajo físico y el esfuerzo de 15 horas.", "D) El deseo pertenece solo al Chakra 3 y no al 4.", "E) Desear cuesta energía calórica que tu cuerpo precisa para dormir profundamente."], ans: 1 },
+                { q: "2. La Ley de la Asunción requiere que tú:", options: ["A) Te esfuerces duramente sin descanso imaginativo alguno.", "B) Asumas internamente que no mereces lo que quieres para dar pena al Universo benevolente.", "C) Te relajes y asumas el sentimiento, la postura y la naturalidad emocional de la persona que ya resolvió su problema en Tiempo Presente, antes de que suceda afuera.", "D) Repitas palabras sin sentir absolutamente ninguna emoción profunda por seguridad.", "E) Esperes que un ángel lo materialice mientras te acuestas."], ans: 2 },
+                { q: "3. La rutina Alquimista se estructura en un ciclo de reprogramación plástica de mínimo:", options: ["A) 7 Días", "B) 100 Días", "C) 12 Días", "D) 21 Días (Para crear el cableado base de la red neuronal que cambia el filtro del RAS).", "E) 3 Días rápidos."], ans: 3 },
+                { q: "4. En la Fase A.M. (Mañana), ¿qué debes hacer los primeros 5 minutos al abrir los ojos para insertar tu realidad en Alfa/Theta natural?", options: ["A) Encender la televisión y verificar cómo va la economía global y local de tu ciudad.", "B) Tomar dos vasos de café exprés rápido para activar la Adrenalina de lucha.", "C) No tocar aparatos. Poner NeuroSync, cerrar los ojos y sentir el impacto físico y emocional de la inmensa gratitud por tu deseo como si lo estuvieras experimentando justo ahora.", "D) Correr 5 kilómetros para agitar la respiración cardiovascular sin meditar.", "E) Quejarse de tener que ir a trabajar un día más para descargar la frustración reprimida de ayer."], ans: 2 },
+                { q: "5. En la Fase de Higiene Diurna (Tarde), ¿cómo reaccionas si tu jefe o cliente inician un ambiente de drama tóxico y pánico?", options: ["A) Entras a la discusión y defiendes tu postura gritando más alto para demostrar autoridad al universo.", "B) Te unes al miedo para demostrar empatía con ellos y sufrir su mismo nivel de victimismo doloroso.", "C) No te enganchas a la frecuencia densa. Te aplicas mentalmente el protocolo de la Burbuja Espejo, cortas el canal de robo y te anclas en paz.", "D) Renuncias a tu trabajo de forma impulsiva y te vas al campo lejos de las grandes urbes para siempre.", "E) Entras en pánico e intentas huir corriendo físicamente de la habitación porque tu campo no soporta la mala vibra."], ans: 2 },
+                { q: "6. Para el Protocolo P.M. (Noche), el estado Delta cerebral es crucial debido a que:", options: ["A) Genera sueños lúcidos y proyecciones astrales de ciencia ficción.", "B) Es el umbral sin barreras lógicas. El NeuroSync en bucle infinito de noche baña directamente las células, forzando la reparación y reestructurando profundamente las instrucciones del disco duro subconsciente sin interferencia de tu ego que está dormido.", "C) Te permite memorizar libros de texto en inglés si los escuchas a la vez.", "D) Elimina el ronquido físico en la garganta.", "E) Mantiene la vigilia activa por si hay peligro exterior."], ans: 1 },
+                { q: "7. ¿Qué frase advierte el manual sobre la diferencia entre ser estudiante de teoría y convertirse en maestro cuántico de la realidad?", options: ["A) Quien no sufre no obtiene nada verdadero al final del camino en este duro holograma material de luz y sombra.", "B) El conocimiento de las leyes universales sin colapsarlo mediante la aplicación activa, es solo entretenimiento de sofá y puro potencial inútilmente almacenado en la memoria temporal.", "C) Mientras más cursos compres sobre espiritualidad, más rápido llegará el cheque en blanco a tu correo físico.", "D) Es mejor saber que hacer en el mundo.", "E) Quien aprende teoría no debe jamás practicar los métodos sin un gurú de la India a su lado que lo supervise."], ans: 1 },
+                { q: "8. El momento ideal para decirle a tu cuerpo 'Yo soy escasez' o 'Yo soy enfermo' es:", options: ["A) Al despertar por la mañana.", "B) Antes de dormir, usando la imaginación.", "C) Solo cuando quieres dar lástima al sistema médico.", "D) NUNCA. Las palabras que acompañan al 'Yo Soy' son comandos de programación en lenguaje de máquina para el ADN y el Campo, colapsando instantáneamente su resultado en el plano del holograma.", "E) Todo el tiempo para no perder humildad humana."], ans: 3 },
+                { q: "9. Al concluir esta Academia, tu transición y muerte psicológica es definitiva. Dejaste de ser la __________________ para convertirte biológica y energéticamente en el __________________.", options: ["A) Víctima impotente del caos de las circunstancias y del exterior / Espectador neutral y pacífico que acepta pasivamente todo dolor sin intentar mejorarlo jamás.", "B) Víctima esclava del azar, de la economía y la genética / Arquitecto activo y Observador Soberano capaz de manipular su entorno interior celular para colapsar y alterar las piezas del tablero de su holograma material externo.", "C) Esclavo trabajador de una empresa ajena / Jefe abusivo dueño de miles de empresas gigantes mundiales.", "D) Alumno sin sabiduría intelectual de libros / Filósofo aburrido y deprimido con doctorados pero sin un centavo.", "E) Culpable del sufrimiento global de la raza humana / Salvador místico del dolor de todos tus antepasados fallecidos."], ans: 1 },
+                { q: "10. La afirmación final que sella tu bautizo en el salto cuántico es que tú debes de dejar de:", options: ["A) Comprar productos comerciales.", "B) Comer sal y usar zapatos en la hierba del parque local.", "C) Pedirle permiso al universo, a tus traumas del pasado y a la sociedad para habitar la realidad de riqueza y paz suprema que te pertenece por simple y divino derecho de consciencia.", "D) Escuchar frecuencias comerciales en la calle si están en afinación de 440 Hz por miedo a enfermarte en menos de diez horas de salir a pasear.", "E) Pagar impuestos a tu gobierno si ya vibras alto."], ans: 2 }
+            ]
+        };
+
+        // =============================================
+        // CONFIGURACIÓN SUPABASE
+        // =============================================
+        const SUPABASE_URL = 'https://dothtuwrsplezhaxkjmw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdGh0dXdyc3BsZXpoYXhram13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NzIzMjEsImV4cCI6MjA3MTI0ODMyMX0.B13yokCG9VQ49kjZ5pHeBdqBtW7i2CP8yg2l2Ekhqnc';
+
+        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let userLevel = 1;
+        let currentUser = null;
+
+        // --- SISTEMA CORE DEL LMS ---
+        const navItems = document.querySelectorAll('#main-nav li');
+        const sections = document.querySelectorAll('.module-section');
+
+        // =============================================
+        // CARGAR PROGRESO DESDE SUPABASE
+        // =============================================
+        async function loadUserProgress() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                alert("❌ No estás logueado.\n\nInicia sesión primero en Neurosync.");
+                return;
+            }
+            currentUser = user;
+
+            const { data } = await supabase
+                .from('neuro_academy_progress')
+                .select('current_level')
+                .eq('user_id', user.id)
+                .single();
+
+            if (data) {
+                userLevel = data.current_level || 1;
+            } else {
+                await supabase.from('neuro_academy_progress').insert({ user_id: user.id, current_level: 1 });
+            }
+            updateSidebarLocks();
+        }
+
+        // Guardar progreso
+        async function saveProgress(newLevel) {
+            if (!currentUser) return;
+            await supabase
+                .from('neuro_academy_progress')
+                .upsert({ user_id: currentUser.id, current_level: newLevel }, { onConflict: 'user_id' });
+        }
+
+        function updateSidebarLocks() {
+            navItems.forEach(item => {
+                const itemLevel = parseInt(item.getAttribute('data-level'));
+                if (itemLevel > userLevel) {
+                    item.classList.add('locked');
+                } else {
+                    item.classList.remove('locked');
+                }
+            });
+        }
+
+        // Navegación Click
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if(this.classList.contains('locked')) {
+                    alert("⚠️ ACCESO RESTRINGIDO.\n\nEl conocimiento cuántico avanzado requiere que integres primero los fundamentos. Aprueba el examen del nivel actual con 80% o más para desencriptar este módulo.");
+                    return;
+                }
+                navItems.forEach(nav => nav.classList.remove('active'));
+                sections.forEach(sec => sec.classList.remove('active'));
+                this.classList.add('active');
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+                document.getElementById('main-content-scroll').scrollTo(0,0);
+            });
+        });
+
+        // Generador de Quizzes dinámico
+        function renderQuiz(quizNumber) {
+            const quizData = allQuizzes[quizNumber];
+            if(!quizData || quizData.length === 0) return; 
+            const container = document.getElementById(`quiz-form-${quizNumber}`);
+            if(!container) return;
+
+            let html = '';
+            quizData.forEach((qObj, index) => {
+                html += `<div class="question-block" id="qblock-${quizNumber}-${index}">
+                    <div class="question-text">${qObj.q}</div>
+                    <div class="options-list">
+                        ${qObj.options.map((opt, oIndex) => `
+                            <label class="option-item">
+                                <input type="radio" name="quiz${quizNumber}_q${index}" value="${oIndex}">
+                                <span>${opt}</span>
+                            </label>`).join('')}
+                    </div>
+                </div>`;
+            });
+            const nextLevel = quizNumber + 1;
+            html += `<button class="btn-submit-quiz" onclick="evalQuiz(${quizNumber}, ${nextLevel})">Evaluar Nivel ${quizNumber} <i class="fas fa-satellite-dish" style="margin-left: 10px;"></i></button>`;
+            html += `<div id="quiz-result-${quizNumber}" class="quiz-result"></div>`;
+            container.innerHTML = html;
+        }
+
+        // Evaluar examen + guardar en Supabase
+        window.evalQuiz = async function(quizNumber, nextLevel) {
+            const quizData = allQuizzes[quizNumber];
+            let score = 0;
+            let answeredAll = true;
+
+            quizData.forEach((qObj, index) => {
+                const selected = document.querySelector(`input[name="quiz${quizNumber}_q${index}"]:checked`);
+                if(!selected) answeredAll = false;
+                else if (parseInt(selected.value) === qObj.ans) score++;
+            });
+
+            if(!answeredAll) {
+                alert("⚠️ PROTOCOLO INCOMPLETO. Faltan preguntas por contestar. No adivines el código a medias.");
+                return;
+            }
+
+            const percentage = (score / quizData.length) * 100;
+            const resultDiv = document.getElementById(`quiz-result-${quizNumber}`);
+            resultDiv.style.display = 'block';
+
+            if(percentage >= 80) {
+                resultDiv.className = 'quiz-result result-pass';
+                
+                if (quizNumber === 10) {
+                    resultDiv.innerHTML = `<i class="fas fa-crown" style="font-size: 4rem; margin-bottom: 15px; color: #fbbf24;"></i>
+                    <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom:10px;">ACADEMIA COMPLETADA.</h2>
+                    <p>Eres libre del holograma del sufrimiento. Tu reprogramación teórica ha concluido. Ve y colapsa tu nueva realidad.</p>`;
+                } else {
+                    resultDiv.innerHTML = `<i class="fas fa-fingerprint" style="font-size: 4rem; margin-bottom: 15px; color: var(--success);"></i>
+                    <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom:10px;">¡CÓDIGO APROBADO! Puntaje: ${Math.round(percentage)}%</h2>
+                    <p>El encriptado del Nivel ${nextLevel} ha sido desactivado exitosamente. Saltando a la siguiente fase...</p>`;
+                    
+                    if(userLevel < nextLevel) {
+                        userLevel = nextLevel;
+                        await saveProgress(userLevel);
+                        updateSidebarLocks();
+                    }
+                    setTimeout(() => {
+                        const nextModBtn = document.querySelector(`li[data-target="mod${nextLevel}"]`);
+                        if(nextModBtn) nextModBtn.click();
+                    }, 4000);
+                }
+
+            } else {
+                resultDiv.className = 'quiz-result result-fail';
+                resultDiv.innerHTML = `<i class="fas fa-radiation" style="font-size: 4rem; margin-bottom: 15px; color: var(--error);"></i>
+                    <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom:10px;">FRECUENCIA INSUFICIENTE: ${Math.round(percentage)}%</h2>
+                    <p>Requiere mínimo 80%. Para evitar la disonancia cognitiva, regresa al Módulo ${quizNumber}, estudia lentamente cada detalle y vuelve a intentarlo.</p>`;
+            }
+        };
+
+        // Reset progreso con Supabase
+        window.resetProgress = async function() {
+            if (!currentUser || !confirm("¿Resetear TODO tu progreso de la Academia?")) return;
+            await supabase.from('neuro_academy_progress').update({ current_level: 1 }).eq('user_id', currentUser.id);
+            userLevel = 1;
+            updateSidebarLocks();
+            location.reload();
+        };
+
+        // =============================================
+        // INICIO
+        // =============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProgress();
+            for(let i=1; i<=10; i++) { renderQuiz(i); }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Continuar al sitio — NeuroSync™</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #000000;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* ---- TIKTOK LOGO ---- */
+        .tiktok-logo {
+            width: 130px;
+            margin-bottom: 40px;
+            margin-top: -60px;
+        }
+
+        /* ---- HAND DRAWN ARROW ---- */
+        .arrow-container {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            width: 100px;
+            height: 100px;
+        }
+        .arrow-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-10deg);
+        }
+
+        /* ---- CENTRAL CIRCLE ---- */
+        .central-indicator {
+            width: 180px;
+            height: 180px;
+            background: #f2f2f2;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 50px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .globe-icon {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .central-text {
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #333;
+            max-width: 100px;
+        }
+
+        .cursor-hand {
+            position: absolute;
+            bottom: 30px;
+            right: 20px;
+            font-size: 2.5rem;
+            color: #000;
+            transform: rotate(-10deg);
+            animation: tap 1.5s infinite ease-in-out;
+        }
+
+        @keyframes tap {
+            0%, 100% { transform: scale(1) rotate(-10deg); }
+            50% { transform: scale(0.9) rotate(-10deg); }
+        }
+
+        /* ---- INSTRUCTIONS ---- */
+        .headline {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .subheadline {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.5;
+            max-width: 320px;
+        }
+
+        .subheadline b {
+            color: #000;
+            font-weight: 700;
+        }
+
+        /* ---- FALLBACK BUTTON (Hidden but functional) ---- */
+        .copy-link {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #999;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Android Auto-intent UI */
+        #android-msg {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            background: #000;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            animation: fadeInUp 0.5s ease both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ARROW POINTING TO TOP RIGHT -->
+    <div class="arrow-container">
+        <svg class="arrow-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 80C30 70 60 50 85 15" stroke="black" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 5" />
+            <path d="M70 15H85V30" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </div>
+
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/TikTok_logo.svg/1200px-TikTok_logo.svg.png" alt="TikTok" class="tiktok-logo">
+
+    <div class="central-indicator">
+        <i class="fas fa-globe globe-icon"></i>
+        <div class="central-text">Abrir en el navegador</div>
+        <i class="fas fa-mouse-pointer cursor-hand"></i>
+    </div>
+
+    <h1 class="headline">Para abrir esta página</h1>
+    <p class="subheadline">
+        toca los <b>tres puntos ...</b> y elige <br>
+        <b>"Abrir en el navegador"</b>.
+    </p>
+
+    <div class="copy-link" onclick="copyLink()">O copiar enlace manualmente</div>
+
+    <div id="android-msg">Abriendo en Chrome automáticamente...</div>
+
+    <script>
+    (function () {
+        var ua = navigator.userAgent || navigator.vendor || window.opera;
+        var isTikTok   = /TikTok/i.test(ua);
+        var isSocial   = /Instagram|FBAN|FBAV/i.test(ua);
+        var isAndroid  = /Android/i.test(ua);
+
+        // Si NO estamos en TikTok/Social, ir directo a la venta
+        if (!isTikTok && !isSocial) {
+            window.location.replace('../index.html');
+            return;
+        }
+
+        // Android: Intento de apertura automática en Chrome
+        if (isAndroid) {
+            document.getElementById('android-msg').style.display = 'block';
+            var targetUrl  = window.location.href.replace(/go\.html([^?#]*).*$/, 'index.html');
+            var cleanUrl   = targetUrl.replace(/^https?:\/\//, '');
+            setTimeout(function () {
+                try {
+                    window.location.href =
+                        'intent://' + cleanUrl +
+                        '#Intent;scheme=https;package=com.android.chrome;end';
+                } catch (e) { console.log("Intent failed"); }
+            }, 2000);
+        }
+    })();
+
+    function copyLink() {
+        var url = window.location.href.replace(/go\.html([^?#]*).*$/, 'index.html');
+        navigator.clipboard.writeText(url).then(function() {
+            alert("Enlace copiado. Pégalo en tu navegador.");
+        });
+    }
+    </script>
+
+</body>
+</html>

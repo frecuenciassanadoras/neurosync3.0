@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenida - Despierta tu Energía Interior</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #d4af37; /* Dorado */
+            --bg-deep: #0f0c29;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --text: #f0f0f0;
+            --accent: #a64bf4; /* Púrpura espiritual */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #fff; /* Fondo blanco para formato PDF/Impresión */
+            color: #333;
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* Simulación de Hoja A4 / PDF */
+        .pdf-container {
+            width: 100%;
+            max-width: 800px;
+            background: #fff;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        /* Encabezado Místico */
+        .header {
+            background: var(--bg-gradient);
+            color: #fff;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Contenido Principal */
+        .content {
+            padding: 50px 40px;
+        }
+
+        .welcome-text {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 40px;
+            text-align: justify;
+        }
+
+        .welcome-text strong { color: var(--accent); }
+
+        /* Pasos de Acceso */
+        .steps-container {
+            background: #f9f9f9;
+            border-left: 4px solid var(--primary);
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .step {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-deep);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-family: 'Cinzel', serif;
+            color: #302b63;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .step-content p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .highlight-box {
+            background: rgba(212, 175, 55, 0.1);
+            color: #8a6d0b;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            border: 1px dashed var(--primary);
+        }
+
+        /* Botón Principal */
+        .cta-container {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .btn-main {
+            background: linear-gradient(45deg, #d4af37, #f0c45c);
+            color: #000;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Soporte */
+        .support-section {
+            text-align: center;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .support-link {
+            color: #25D366; /* Color WhatsApp */
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        /* Footer del PDF */
+        .footer {
+            background: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.7rem;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header { padding: 30px 20px; }
+            .content { padding: 30px 20px; }
+            .header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pdf-container">
+        
+        <div class="header">
+            <h1>Bienvenido a Tu Transformación</h1>
+            <h2>Despierta tu Energía Interior</h2>
+        </div>
+
+        <div class="content">
+            <div class="welcome-text">
+                <p>Estás a punto de comenzar un viaje profundo hacia tu despertar interior y expansión energética. A lo largo de este proceso sagrado, te guiaremos paso a paso para desbloquear tu poder interior y aprender a manifestar desde el alma.</p>
+                <br>
+                <p>Este es el primer paso hacia una vida plena, vibrante y llena de propósito. Tu energía es infinita y está esperando ser activada. Al abrir tu corazón y mente, podrás acceder a un potencial que siempre ha estado dentro de ti.</p>
+                <br>
+                <p><strong>Estamos honrados de acompañarte en este sendero de luz. ¡Prepárate para elevar tu vibración!</strong></p>
+            </div>
+
+            <div class="steps-container">
+                <h3 style="font-family:'Cinzel', serif; margin-bottom:20px; color:#302b63;">TU RUTA DE ACCESO:</h3>
+
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-envelope-open-text"></i></div>
+                    <div class="step-content">
+                        <h3>1. Revisa tu Correo Electrónico</h3>
+                        <p>Hemos enviado tus credenciales de acceso (Usuario y Contraseña) a la dirección de correo con la que te registraste.</p>
+                        <div class="highlight-box">
+                            <i class="fas fa-exclamation-triangle"></i> <strong>Importante:</strong> Si no encuentras el correo en tu bandeja de entrada, por favor revisa la carpeta de <strong>SPAM, Correo No Deseado o Promociones</strong>. A veces los filtros de correo ocultan este mensaje.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-sign-in-alt"></i></div>
+                    <div class="step-content">
+                        <h3>2. Ingresa a la Plataforma</h3>
+                        <p>Ve al enlace de la plataforma y haz clic en el botón que dice <strong>"INGRESAR"</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div class="step-content">
+                        <h3>3. Selecciona tu Curso</h3>
+                        <p>Una vez dentro del panel, selecciona la tarjeta que dice <strong>"Taller Despierta tu Energía Interior"</strong> para comenzar tus lecciones.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-container">
+                <p style="margin-bottom: 15px; color: #555;">¿Listo para sintonizar con el Universo?</p>
+                <a href="https://reproductor-frecuencias.netlify.app/" target="_blank" class="btn-main">
+                    INICIAR EL CAMINO <i class="fas fa-arrow-right" style="margin-left:10px;"></i>
+                </a>
+            </div>
+
+            <div class="support-section">
+                <p>¿Tienes problemas para acceder o no encuentras tus claves?</p>
+                <p>Estamos aquí para ayudarte en cada paso.</p>
+                <a href="https://wa.link/1gd4bo" target="_blank" class="support-link">
+                    <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Contactar Soporte Sagrado por WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2024 Despierta tu Energía Interior. Todos los derechos reservados.
+        </div>
+
+    </div>
+
+</body>
+</html>
